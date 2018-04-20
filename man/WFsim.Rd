@@ -4,18 +4,24 @@
 \alias{WFsim}
 \title{Wright-Fisher Sample}
 \usage{
-WFsim(N, N.gen)
+WFsim(N, N.gen, prob = NULL)
 }
 \arguments{
 \item{N}{constant population size}
 
 \item{N.gen}{number of generations to simulate}
+
+\item{prob}{function providing probabilities for (non-uniform) multinomial sampling of parents}
 }
 \value{
-an (N.gen-1)xN matrix , where the (i,j)th entry specifies the parent of individual j of generation i+1
+an object of class 'genealogy'
 }
 \description{
 Generate a realisation of the Wright-Fisher population model
+}
+\details{
+The attribute 'history' contains an (N.gen-1)xN matrix , where the (i,j)th entry specifies the parent of individual j of generation i+1.
+The function prob should take a vector argument specifying a set of individuals; and should return a vector of (unnormalised) probability weights.
 }
 \author{
 Suzie Brown
