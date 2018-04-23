@@ -31,5 +31,7 @@ WFsim <- function(N, N.gen, prob=NULL){
   else{
     history@model <- "Generalised Wright-Fisher"
   }
+  history@N <- as.integer(N)
+  history@Ngen <- as.integer(N.gen)
   history
 }
