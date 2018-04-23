@@ -16,9 +16,12 @@
 #'
 #' @export plot.genealogy
 #'
-plot.genealogy <- function(history=attr(history, 'history'), title=attr(history,'model'), col.line='darkgrey', shade.dead=!highlight.sample, col.alive='black', col.dead='grey', highlight.sample=FALSE, sampl=1:N, col.highlight='purple',...){
-  N <- ncol(history)
-  N.gen <- nrow(history)+1
+plot.genealogy <- function(history, title=NULL, col.line='darkgrey', shade.dead=!highlight.sample, col.alive='black', col.dead='grey', highlight.sample=FALSE, sampl=1:N, col.highlight='purple',...){
+
+  if (is.null(title)){title <- attr(history,"model")} ## automatic title if none specified
+
+  N <- attr(history, 'N')
+  N.gen <- attr(history, 'Ngen')
 
   x <- rep(1:N, N.gen)
   y <- rep(1:N.gen, each=N)
@@ -77,4 +80,20 @@ plot.genealogy <- function(history=attr(history, 'history'), title=attr(history,
     points(ii[hl.nodes[1,]],rep(N.gen, sum(hl.nodes[1,])), pch=21, col=1, bg=col.highlight, cex=4)
   }
 }
+
+#' Sampled Genealogy Plot
+#'
+#' Plot method for objects of class samplegenealogy
+#'
+#' @param samplehistory an object of class samplegenealogy
+#'
+#' @author Suzie Brown
+#'
+#' @export plot.samplegenealogy
+#'
+
+plot.samplegenealogy <- function(samplehistory){
+  plot.genealogy(history=attr(samplehistory,'history'), highlight.sample = TRUE, sampl = attr(samplehistory,'sample'))
+}
+
 
