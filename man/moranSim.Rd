@@ -4,12 +4,14 @@
 \alias{moranSim}
 \title{Moran Sample}
 \usage{
-moranSim(N, N.gen)
+moranSim(N, N.gen, rescale = FALSE)
 }
 \arguments{
 \item{N}{constant population size}
 
 \item{N.gen}{number of generations (single reproductions) to simulate}
+
+\item{rescale}{return only every Nth generation? (for comparability with W-F model)}
 }
 \value{
 an object of class 'genealogy'

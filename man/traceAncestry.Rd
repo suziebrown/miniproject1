@@ -4,12 +4,14 @@
 \alias{traceAncestry}
 \title{Trace sample ancestry}
 \usage{
-traceAncestry(history, sampl)
+traceAncestry(history, sampl, maxgen = NULL)
 }
 \arguments{
 \item{history}{an ocject of class genealogy, as returned from WFsim or moranSim}
 
 \item{sampl}{a vector of integers indicating which individuals from the most recent generation are to be included in the sample}
+
+\item{maxgen}{the maximum number of generations back in time to investigate}
 }
 \value{
 an object of class samplegenealogy
