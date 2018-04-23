@@ -4,8 +4,7 @@
 \alias{plot.genealogy}
 \title{Genealogy Plot}
 \usage{
-\method{plot}{genealogy}(history = attr(history, "history"),
-  title = attr(history, "model"), col.line = "darkgrey",
+\method{plot}{genealogy}(history, title = NULL, col.line = "darkgrey",
   shade.dead = !highlight.sample, col.alive = "black", col.dead = "grey",
   highlight.sample = FALSE, sampl = 1:N, col.highlight = "purple", ...)
 }
