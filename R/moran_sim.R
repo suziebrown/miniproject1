@@ -25,5 +25,7 @@ moranSim <- function(N, N.gen){
   }
   class(history) <- 'genealogy'
   history@model <- 'Moran'
+  history@N <- N
+  history@Ngen <- N.gen
   history
 }
