@@ -20,7 +20,9 @@ an object of class 'genealogy'
 Generate a realisation of the Moran population model
 }
 \details{
-The attribute 'history' contains an (N.gen-1)xN matrix , where the (i,j)th entry specifies the parent of individual j of generation i+1. For comparability to Wright-Fisher model, multiply N.gen by N: one generation in W-F model comprises N reproduction events.
+The attribute 'history' contains an (N.gen-1)xN matrix , where the (i,j)th entry specifies the parent of individual j of generation i+1.
+For comparability to Wright-Fisher model, multiply N.gen by N: one generation in W-F model comprises N reproduction events.
+Note that when rescale=TRUE, the returned value of N.gen is the scaled number of generations, and is not equal to the inputted N.gen.
 }
 \author{
 Suzie Brown
