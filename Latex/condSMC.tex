@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{enumitem}
+
+\title{Extension to conditional SMC}
+\author{Suzie Brown}
+\date{\today}
+
+%\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage[round, sort&compress]{natbib}
+\usepackage{har2nat} %%% Harvard reference style
+\bibliographystyle{agsm}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\PR}{\mathbb{P}}
+\newcommand{\V}{\operatorname{Var}}
+\newcommand{\vt}[2][t]{v_{#1}^{(#2)}}
+\newcommand{\vttilde}[2][t]{\tilde{v}_{#1}^{(#2)}}
+\newcommand{\wt}[2][t]{w_{#1}^{(#2)}}
+\newcommand{\eqdist}{\overset{d}{=}}
+\newcommand{\Bin}{\operatorname{Bin}}
+\newtheorem{thm}{Theorem}
+
+\begin{document}
+\maketitle
+We now consider extending the results of \citet{koskela2018} to the case of conditional SMC.
+In particular, the SMC updates will be conditioned on a particular trajectory surviving. We concentrate on the exchangeable model, so we may take WLOG that the ``immortal line'' is the trajectory containing individual 1 from each generation.
+We first assume the simplest case, with multinomial resampling; analogous to the standard SMC case where
+\begin{equation*}
+\vt{i} \eqdist \Bin (N, \wt{i}), \qquad i=1,\dots,N
+\end{equation*}
+yielding the coalescence rate
+\begin{equation}
+c_N(t) := \frac{1}{(N)_2} \sum_{i=1}^{N} \E\left[ (\vt{i})_2 \right] = \sum_{i=1}^{N} (\wt{i})^2.
+\end{equation}
+But now, since the first line is immortal, in each time step the first individual must have at least one offspring. The remaining $N-1$ offspring are assigned multinomially to the $N$ possible parents as usual, giving the offspring numbers:
+\begin{align*}
+& \vttilde{1} \eqdist 1 + \Bin(N-1, \wt{1}) \\
+& \vttilde{i} \eqdist \Bin(N-1, \wt{i}), \qquad i=2,\dots,N.
+\end{align*}
+We therefore have the following moments:
+\begin{align*}
+&\E(\vttilde{i}) = (N-1)\wt{i} & \V(\vttilde{i}) = (N-1)\wt{i}(1-\wt{i}) &\qquad i=2,\dots,N \\
+&\E(\vttilde{1}) = (N-1)\wt{1} + 1 & \V(\vttilde{1}) = (N-1)\wt{1}(1-\wt{1}) &
+\end{align*}
+and we can derive the altered coalescence rate:
+\begin{align}
+\tilde{c}_N(t) &= \frac{1}{(N)_2} \sum_{i=1}^{N} \E\left[ (\vttilde{i})_2 \right] \notag\\
+&= \frac{1}{(N)_2} \E\left[ (\vttilde{1})^2 - \vttilde{1} \right] + \frac{1}{(N)_2}\sum_{i=2}^{N} \E\left[ (\vttilde{i})^2 - \vttilde{i} \right] \notag\\
+&= \frac{1}{(N)_2} \sum_{i=2}^{N} (N-1)(N-2)(\wt{i})^2 + (N^2-3N+2)(\wt{1})^2 + 2(N-1)\wt{1} \notag\\
+&= \frac{1}{(N)_2} \sum_{i=1}^{N} (N-1)(N-2)(\wt{i})^2 + 2(N-1)\wt{1} \notag\\
+&= \frac{N-2}{N} c_N(t) + \frac{2}{N} \wt{1}
+%&\overset{N\to\infty}{\longrightarrow} c_N(t) \notag
+\end{align}
+
+\bibliography{smc.bib}
+\end{document}
