@@ -59,8 +59,9 @@ points(meanx, pch=16, col=2)
 lines(meanx+varx^(0.5), col=2, lty=2)
 lines(meanx-varx^(0.5), col=2, lty=2)
 
-# A <- foo$ancestry
-# class(A) <- 'genealogy'
-# A@N <-as.integer(N)
-# A@Ngen <- as.integer(tmax)
-# plot(A, highlight.sample = T)
+A <- foo$ancestry
+class(A) <- 'genealogy'
+A@N <-as.integer(N)
+A@Ngen <- as.integer(tmax)
+Asize <- ancestrySize(A)
+plot(Asize, type='b', pch=16, col=2)
