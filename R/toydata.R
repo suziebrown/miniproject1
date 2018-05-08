@@ -1,7 +1,7 @@
 Delta <- 0.1
 sigma <- 0.1
-tmax <- 15
-N <- 50
+tmax <- 10
+N <- 200
 
 ## discretised Ornstein-Uhlenbeck process
 
@@ -17,13 +17,13 @@ sim.data <- function(tmax, Delta, sigma){
   list(x=x,y=y)
 }
 
-K <- function(x){ ## transition function of HMM
-  (1-Delta)*x + Delta^(0.5)*rnorm(length(x))
-}
-
-g <- function(x,xprime){ ## transition density x[t+1] | x[t]
-  (2*pi*Delta)^(-0.5) * exp(-(xprime - (1-Delta)*x)^2/(2*Delta))
-}
+# K <- function(x){ ## transition function of HMM
+#   (1-Delta)*x + Delta^(0.5)*rnorm(length(x))
+# }
+#
+# g <- function(x,xprime){ ## transition density x[t+1] | x[t]
+#   (2*pi*Delta)^(-0.5) * exp(-(xprime - (1-Delta)*x)^2/(2*Delta))
+# }
 
 p <- function(y,x){ ## emission density y[t] | x[t]
   (2*pi)^(-0.5)*sigma^(-1) * exp(-(y-x)^2/(2*sigma^2))
@@ -48,10 +48,19 @@ stdSMC <- function(N, y, n.step=length(y)-1){
     X[t,] <- rnorm(N, (1-Delta)*X[t-1,], Delta^(0.5)) ## propagate particles
     w <- p(y[t], X[t,]) ## caluculate weights
     W[t,] <- w/sum(w) ## normalise weights
-    print(t)
   }
   list(positions=X,weights=W,ancestry=A)
 }
 
 foo <- stdSMC(N,y)
+meanx <- rowSums(foo$positions)/N
+varx <- apply(foo$positions,1,var)/(N^(0.5))
+points(meanx, pch=16, col=2)
+lines(meanx+varx^(0.5), col=2, lty=2)
+lines(meanx-varx^(0.5), col=2, lty=2)
 
+# A <- foo$ancestry
+# class(A) <- 'genealogy'
+# A@N <-as.integer(N)
+# A@Ngen <- as.integer(tmax)
+# plot(A, highlight.sample = T)
