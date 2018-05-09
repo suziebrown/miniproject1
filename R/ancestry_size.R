@@ -44,5 +44,5 @@ ancestrySize <- function(history, sampl=NULL, maxgen=NULL){
     Size[min.gen:(MRCA-1)] <- rep(1, MRCA-1)
   }
 
-  Size
+  list(familySize=Size, treeHeight=N.gen-MRCA)
 }
