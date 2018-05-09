@@ -2,6 +2,7 @@ Delta <- 0.1
 sigma <- 0.1
 tmax <- 10
 N <- 200
+n <- 10
 
 ## discretised Ornstein-Uhlenbeck process
 
@@ -54,7 +55,7 @@ stdSMC <- function(N, y, n.step=length(y)-1){
 
 foo <- stdSMC(N,y)
 meanx <- rowSums(foo$positions)/N
-varx <- apply(foo$positions,1,var)/(N^(0.5))
+varx <- apply(foo$positions,1,var)
 points(meanx, pch=16, col=2)
 lines(meanx+varx^(0.5), col=2, lty=2)
 lines(meanx-varx^(0.5), col=2, lty=2)
@@ -63,5 +64,26 @@ A <- foo$ancestry
 class(A) <- 'genealogy'
 A@N <-as.integer(N)
 A@Ngen <- as.integer(tmax)
-Asize <- ancestrySize(A)
-plot(Asize, type='b', pch=16, col=2)
+Atree <- ancestrySize(A, sampl=sample(1:N,n,replace=F))
+tHeight <- Atree$treeHeight
+plot(Atree$familySize, type='b', pch=16, col=2, ylim=c(1,max(Atree$familySize)), xlab='generations -->', ylab='number of ancestors', main=paste('Size of ancestral tree: N=',N,', n=',n, ', tree height=',tHeight))
+
+##----------------------------
+
+condSMC <- function(N, y, n.step=length(y)-1){
+  A <- matrix(NA, nrow=n.step, ncol=N)
+  X <- matrix(NA, nrow=n.step+1, ncol=N)
+  W <- matrix(NA, nrow=n.step+1, ncol=N)
+  X[1,] <- rnorm(N) ## initial state
+  w <- p(y[1], X[1,]) ## calculate weights
+  W[1,] <- w/sum(w) ## normalise weights
+  for (t in 2:(n.step+1)){
+    A[t-1,] <- sample(1:N, N, prob=w, replace=T) ## choose the parent of each offspring
+    A[t-1,1] <- 1 ## insist on continuing the immortal line
+    x <- X[t-1,A[t-1,]] ## resample the particles
+    X[t,] <- rnorm(N, (1-Delta)*X[t-1,], Delta^(0.5)) ## propagate particles
+    w <- p(y[t], X[t,]) ## caluculate weights
+    W[t,] <- w/sum(w) ## normalise weights
+  }
+  list(positions=X,weights=W,ancestry=A)
+}
