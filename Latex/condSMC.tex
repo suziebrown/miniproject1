@@ -37,25 +37,27 @@ We first assume the simplest case, with multinomial resampling; analogous to the
 \end{equation*}
 yielding the coalescence rate
 \begin{equation}
-c_N(t) := \frac{1}{(N)_2} \sum_{i=1}^{N} \E\left[ (\vt{i})_2 \right] = \sum_{i=1}^{N} (\wt{i})^2.
+c_N(t) := \frac{1}{(N)_2} \sum_{i=1}^{N} \E\left[ (\vt{i})_2 \right] = \sum_{i=1}^{N} \E\left[(\wt{i})^2\right].
 \end{equation}
 But now, since the first line is immortal, in each time step the first individual must have at least one offspring. The remaining $N-1$ offspring are assigned multinomially to the $N$ possible parents as usual, giving the offspring numbers:
 \begin{align*}
 & \vttilde{1} \eqdist 1 + \Bin(N-1, \wt{1}) \\
 & \vttilde{i} \eqdist \Bin(N-1, \wt{i}), \qquad i=2,\dots,N.
 \end{align*}
-We therefore have the following moments:
+We therefore have the following moments (using tower property):
 \begin{align*}
-&\E(\vttilde{i}) = (N-1)\wt{i} & \V(\vttilde{i}) = (N-1)\wt{i}(1-\wt{i}) &\qquad i=2,\dots,N \\
-&\E(\vttilde{1}) = (N-1)\wt{1} + 1 & \V(\vttilde{1}) = (N-1)\wt{1}(1-\wt{1}) &
+& \E[\vttilde{i}] = (N-1)\E[\wt{i}] &\\
+& \E[(\vttilde{i})^2] = (N-1)(N-2)\E[(\wt{i})^2] + (N-1)\E[\wt{i}] &\qquad i=2,\dots,N \\
+& \E[\vttilde{1}] = (N-1)\E[\wt{1}] + 1 \\
+& \E[(\vttilde{1})^2] = (N-1)(N-2)\E[(\wt{i})^2] + 3(N-1)\E[\wt{1}] + 1 &
 \end{align*}
 and we can derive the altered coalescence rate:
 \begin{align}
 \tilde{c}_N(t) &= \frac{1}{(N)_2} \sum_{i=1}^{N} \E\left[ (\vttilde{i})_2 \right] \notag\\
 &= \frac{1}{(N)_2} \E\left[ (\vttilde{1})^2 - \vttilde{1} \right] + \frac{1}{(N)_2}\sum_{i=2}^{N} \E\left[ (\vttilde{i})^2 - \vttilde{i} \right] \notag\\
-&= \frac{1}{(N)_2} \sum_{i=2}^{N} (N-1)(N-2)(\wt{i})^2 + (N^2-3N+2)(\wt{1})^2 + 2(N-1)\wt{1} \notag\\
-&= \frac{1}{(N)_2} \sum_{i=1}^{N} (N-1)(N-2)(\wt{i})^2 + 2(N-1)\wt{1} \notag\\
-&= \frac{N-2}{N} c_N(t) + \frac{2}{N} \wt{1}
+&= \frac{1}{(N)_2}\left[ (N-1)(N-2)\E[(\wt{1})^2] + 2(N-1)\E[\wt{1}] \right] + \frac{1}{(N)_2} \sum_{i=2}^{N} (N-1)(N-2)\E[(\wt{i})^2] \notag\\
+&= \frac{1}{(N)_2} \sum_{i=1}^{N} (N-1)(N-2)\E[(\wt{i})^2] + \frac{1}{(N)_2} 2(N-1)\E[\wt{1}] \notag\\
+&= \frac{N-2}{N} c_N(t) + \frac{2}{N} \E[\wt{1}]
 %&\overset{N\to\infty}{\longrightarrow} c_N(t) \notag
 \end{align}
 Since $\wt{1} \leq 1$ for all $t$, as $N\to\infty$ we have

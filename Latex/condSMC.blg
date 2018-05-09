@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2017)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: condSMC.aux
+The style file: agsm.bst
+Database file #1: smc.bib.bib
+You've used 1 entry,
+            2909 wiz_defined-function locations,
+            643 strings with 4954 characters,
+and the built_in function-call counts, 6390 in all, are:
+= -- 1054
+> -- 91
+< -- 0
++ -- 524
+- -- 28
+* -- 567
+:= -- 1265
+add.period$ -- 1
+call.type$ -- 1
+change.case$ -- 14
+chr.to.int$ -- 1
+cite$ -- 1
+duplicate$ -- 15
+empty$ -- 27
+format.name$ -- 31
+if$ -- 1143
+int.to.chr$ -- 5
+int.to.str$ -- 0
+missing$ -- 1
+newline$ -- 6
+num.names$ -- 11
+pop$ -- 4
+preamble$ -- 1
+purify$ -- 15
+quote$ -- 0
+skip$ -- 15
+stack$ -- 0
+substring$ -- 1512
+swap$ -- 2
+text.length$ -- 14
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 4
+warning$ -- 0
+while$ -- 21
+width$ -- 0
+write$ -- 16
