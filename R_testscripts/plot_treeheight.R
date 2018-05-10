@@ -1,4 +1,4 @@
-## make plots of tree height, following KJJS p.29
+## make plots of tree height, following KJJS p.29 (N fixed, n varying)
 ## standard SMC with exchangeable multinomial resampling
 ## data from Ornstein-Uhlenbeck process
 
