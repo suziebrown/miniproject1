@@ -1,6 +1,7 @@
 library(foreach)
 library(doParallel)
 library(future)
+library(doRNG)
 
 ## function dependencies --------------
 
@@ -82,7 +83,7 @@ min_sam_size <- 4
 n_sam_size <- max_sam_size-min_sam_size+1
 Nvals <- 2^(min_sam_size:max_sam_size)
 tmax <- 7*max(Nvals)
-n.reps <- 10
+n.reps <- 1000
 n <- 2^min_sam_size
 
 data <- sim.data(tmax, Delta, sigma)
@@ -101,18 +102,17 @@ SMC_treeht_reps <- function(y,i,j, Nvals){
   anc@N <-as.integer(Nvals[i])
   anc@Ngen <- as.integer(tmax)
 
-  treeHeight[i,j] <- ancestrySize(anc, sampl=sample(1:Nvals[i],n,replace=F))$treeHeight
+  ancestrySize(anc, sampl=sample(1:Nvals[i],n,replace=F))$treeHeight
 }
 
 
-no_cores <- future::availableCores()
+no_cores <- future::availableCores() # -1  # if using desktop
 registerDoParallel(makeCluster(no_cores, type='FORK', outfile="debug_file.txt"))
 
 for (i in 1:n_sam_size){
-  foreach(j=1:n.reps, .combine = c)  %dopar% SMC_treeht_reps(y,i,j,Nvals)
+  treeHeight_i <- foreach(j=1:n.reps, .combine = c)  %dorng% SMC_treeht_reps(y,i,j,Nvals)
+  write.table(t(treeHeight_i), file="treeht_out.csv", sep=",", append=TRUE, row.names=FALSE, col.names=FALSE)
 }
-
-write.csv(treeHeight, file="treeHeight_par.csv")
 
 stopImplicitCluster()
 
