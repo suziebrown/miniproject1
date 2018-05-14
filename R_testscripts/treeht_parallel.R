@@ -17,6 +17,23 @@ sim.data <- function(tmax, Delta, sigma){
   list(x=x,y=y)
 }
 
+stdSMC <- function(N, y, n.step=length(y)-1){
+  A <- matrix(NA, nrow=n.step, ncol=N)
+  X <- matrix(NA, nrow=n.step+1, ncol=N)
+  W <- matrix(NA, nrow=n.step+1, ncol=N)
+  X[1,] <- rnorm(N) ## initial state
+  w <- p(y[1], X[1,]) ## calculate weights
+  W[1,] <- w/sum(w) ## normalise weights
+  for (t in 2:(n.step+1)){
+    A[t-1,] <- sample(1:N, N, prob=w, replace=T) ## choose the parent of each offspring
+    x <- X[t-1,A[t-1,]] ## resample the particles
+    X[t,] <- rnorm(N, (1-Delta)*X[t-1,], Delta^(0.5)) ## propagate particles
+    w <- p(y[t], X[t,]) ## caluculate weights
+    W[t,] <- w/sum(w) ## normalise weights
+  }
+  list(positions=X,weights=W,ancestry=A)
+}
+
 condSMC <- function(N, y, n.step=length(y)-1){
   A <- matrix(NA, nrow=n.step, ncol=N)
   X <- matrix(NA, nrow=n.step+1, ncol=N)
@@ -95,7 +112,7 @@ treeHeight <- matrix(NA, nrow=n_sam_size, ncol=n.reps)
 ## parallel execution --------------------
 
 SMC_treeht_reps <- function(y,i,j, Nvals){
-  samSMC <- condSMC(Nvals[i],y) ## change here to switch between standard and conditional SMC
+  samSMC <- stdSMC(Nvals[i],y) ## change here to switch between standard and conditional SMC
 
   anc <- samSMC$ancestry
   class(anc) <- 'genealogy'
@@ -119,12 +136,13 @@ stopImplicitCluster()
 
 ## process results -----------------------
 
+treeHeight <- read.csv("treeht_out.csv", header=FALSE)
 
 # meanTreeHt <- apply(treeHeight,1,mean)
 # varTreeHt <- apply(treeHeight,1,var)
 # seTreeHt <- (varTreeHt/n.reps)^0.5
 #
-# plot(2^(1:n_sam_size), meanTreeHt/Nvals, type='b', pch=16, col=2,ylim=c(0,2), xlab='N', ylab='mean tree height / N', main=paste('Tree height profile: conditional SMC, n=',n))
-# lines(2^(1:n_sam_size), (meanTreeHt-seTreeHt)/Nvals, col=2, lty=2)
-# lines(2^(1:n_sam_size), (meanTreeHt+seTreeHt)/Nvals, col=2, lty=2)
+# plot(2^(min_sam_size:max_sam_size), meanTreeHt/Nvals, type='b', pch=16, col=2, xlab='N', ylab='mean tree height / N', main=paste('Tree height profile: conditional SMC, n=',n))
+# lines(2^(min_sam_size:max_sam_size), (meanTreeHt-seTreeHt)/Nvals, col=2, lty=2)
+# lines(2^(min_sam_size:max_sam_size), (meanTreeHt+seTreeHt)/Nvals, col=2, lty=2)
 # legend("topright", c("mean","+/- 1 std error"), lty=c(1,2), col=2, pch=c(16,NA))
