@@ -53,7 +53,7 @@ stdSMC <- function(N, y, n.step=length(y)-1){
   list(positions=X,weights=W,ancestry=A)
 }
 
-foo <- stdSMC(N,y)
+foo <- condSMC(N,y,y)
 meanx <- rowSums(foo$positions)/N
 varx <- apply(foo$positions,1,var)
 points(meanx, pch=16, col=2)
@@ -70,18 +70,27 @@ plot(Atree$familySize, type='b', pch=16, col=2, ylim=c(1,max(Atree$familySize)),
 
 ##----------------------------
 
-condSMC <- function(N, y, n.step=length(y)-1){
-  A <- matrix(NA, nrow=n.step, ncol=N)
-  X <- matrix(NA, nrow=n.step+1, ncol=N)
-  W <- matrix(NA, nrow=n.step+1, ncol=N)
-  X[1,] <- rnorm(N) ## initial state
+## due to exchangeability of particles we can take the immortal line to be particle 1 in every generation.
+
+condSMC <- function(N, y, cond_states, n_step=length(y)-1){
+  A <- matrix(NA, nrow=n_step, ncol=N)
+  X <- matrix(NA, nrow=n_step+1, ncol=N)
+  W <- matrix(NA, nrow=n_step+1, ncol=N)
+
+  X[1,2:N] <- rnorm(N-1) ## initial state of free particles
+  X[1,1] <- cond_states[1] ## known initial state of immortal particle
+
   w <- p(y[1], X[1,]) ## calculate weights
   W[1,] <- w/sum(w) ## normalise weights
-  for (t in 2:(n.step+1)){
+
+  for (t in 2:(n_step+1)){
     A[t-1,] <- sample(1:N, N, prob=w, replace=T) ## choose the parent of each offspring
     A[t-1,1] <- 1 ## insist on continuing the immortal line
     x <- X[t-1,A[t-1,]] ## resample the particles
-    X[t,] <- rnorm(N, (1-Delta)*X[t-1,], Delta^(0.5)) ## propagate particles
+
+    X[t,2:N] <- rnorm(N-1, (1-Delta)*X[t-1,2:N], Delta^(0.5)) ## propagate free particles
+    X[t,1] <- cond_states[t] ## known next state of immortal particle
+
     w <- p(y[t], X[t,]) ## caluculate weights
     W[t,] <- w/sum(w) ## normalise weights
   }
