@@ -15,20 +15,32 @@
 #' @export ou_sim
 #'
 
-ou_sim <- function(n_obs, delta, sigma, return_states = FALSE){
+ou_sim <- function(n_obs, delta, sigma, return_states = FALSE) {
   states <- numeric(n_obs+1)
   obs <- numeric(n_obs+1)
 
   states[1] <- rnorm(1)
   obs[1] <- rnorm(1, states[1], sigma)
-  for (i in 2:(n_obs+1)){
+  for (i in 2:(n_obs+1)) {
     states[i] <- rnorm(1, (1 - delta) * states[i-1], delta ^ 0.5)
     obs[i] <- rnorm(1, states[i], sigma)
   }
 
-  if (return_states){
+  if (return_states) {
     return(list(states = states, observations = obs))
   }else{
     return(obs)
   }
+}
+
+ou_emission_density <- function(observation, position, delta, sigma) {
+  (2 * pi) ^ (-0.5) * sigma ^ (-1) * exp(-(observation - position) ^ 2 / (2 * sigma ^ 2))
+}
+
+ou_transition_sam <- function(pos_old, delta, sigma) {
+  rnorm(length(pos_old), (1 - delta) * pos_old, delta ^ 0.5)
+}
+
+ou_initial_sam <- function(n_particles, ...) {
+  rnorm(n_particles)
 }
