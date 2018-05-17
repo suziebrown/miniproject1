@@ -1,6 +1,14 @@
 ## EXPERIMENTS (new tidier source!)
 
 
+## Required packages ---------------------
+
+library(foreach)
+library(doParallel)
+library(future)
+library(doRNG)
+
+
 ## Function dependencies -----------------
 
 standard_SMC <- function(n_particles, observations, emission_density, transition_sam, initial_sam, ...){
@@ -152,6 +160,9 @@ ou_initial_sam <- function(n_particles, delta, sigma) {
   rnorm(n_particles)
 }
 
+setClass("genealogy",representation(history="matrix", N="integer", Ngen="integer", model="character"))
+setClass("samplegenealogy", representation(ancestry="matrix", samplesize="integer", sample="integer", MRCA="integer"),contains="genealogy")
+
 
 ## Initialise variables ------------------
 
@@ -176,9 +187,9 @@ ou_data <- ou_sim(n_obs, delta, sigma)
 std_n_particles <- 100
 
 std_smc <- standard_SMC(std_n_particles, ou_data, ou_emission_density, ou_transition_sam, ou_initial_sam, sigma = sigma, delta = delta)
-imtl_index <- sample(1:std_n_particles, 1, prob = std_smc$weights[nrow(stdSMC$weights), ])
+imtl_index <- sample(1:std_n_particles, 1, prob = std_smc$weights[nrow(std_smc$weights), ])
 
-std_anc <- std_smc$ancestry
+std_anc <- std_smc$ancestors
 class(std_anc) <- 'genealogy'
 std_anc@N <- as.integer(std_n_particles)
 std_anc@Ngen <- as.integer(n_obs - 1)
@@ -197,7 +208,7 @@ imtl_states[n_obs] <- std_smc$positions[n_obs, imtl_index]
 treeht_iters <- function(data, j, n_particles, imtl_states){
   smc_sam <- conditional_SMC(n_particles, data, imtl_states, ou_emission_density, ou_transition_sam, ou_initial_sam, sigma = sigma, delta = delta)
 
-  anc <- smc_sam$ancestry
+  anc <- smc_sam$ancestors
   class(anc) <- 'genealogy'
   anc@N <- as.integer(n_particles)
   anc@Ngen <- as.integer(n_obs - 1)
@@ -208,8 +219,8 @@ treeht_iters <- function(data, j, n_particles, imtl_states){
 no_cores <- future::availableCores()
 registerDoParallel(makeCluster(no_cores, type='FORK', outfile="debug_file.txt"))
 
-for (i in 1:length(n_particles_vals)){
-  tree_height <- foreach(j = 1:n_reps, .combine = c)  %dorng% SMC_treeht_reps(ou_data, j, n_particles_vals[i], imtl_states)
+for (i in 1:length(n_particles_vals)) {
+  tree_height <- foreach(j = 1:n_reps, .combine = c)  %dorng% treeht_iters(ou_data, j, n_particles_vals[i], imtl_states)
   write.table(t(tree_height), file="treeht_out.csv", sep=",", append=TRUE, row.names=FALSE, col.names=FALSE)
 }
 
@@ -227,9 +238,4 @@ se_tree_ht <- (var_tree_ht / n_reps) ^ 0.5
 plot(n_particles_vals, mean_tree_ht / n_particles_vals, type = 'b', pch = 16, col = 2, lwd = 2, xlab = "number of particles", ylab = "mean tree height / no. particles", main = paste("Tree height profile: conditional SMC, no. leaves=", n_leaves))
 lines(n_particles_vals, (mean_tree_ht - se_tree_ht) / n_particles_vals, col = 2, lty = 2)
 lines(n_particles_vals, (mean_tree_ht + se_tree_ht) / n_particles_vals, col = 2, lty = 2)
-legend("topright", c("mean", "+/- 1 std error"), lty = c(1, 2), lwd = c(2,1), col = 2, pch = c(16, NA))
-
-
-
-
-
+legend("topright", c("mean", "+/- 1 std err"), lty = c(1, 2), lwd = c(2,1), col = 2, pch = c(16, NA))
