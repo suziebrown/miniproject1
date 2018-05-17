@@ -132,13 +132,14 @@ setClass("samplegenealogy", representation(ancestry="matrix", samplesize="intege
 
 Delta <- 0.1
 sigma <- 0.1
-max_sam_size <- 12
+max_sam_size <- 13
 min_sam_size <- 4
 n_sam_size <- max_sam_size-min_sam_size+1
 Nvals <- 2^(min_sam_size:max_sam_size)
-tmax <- 7*max(Nvals) ## number of observation times
-n.reps <- 1000
+tmax <- max(Nvals) ## number of observations
+n.reps <- 100 ## number of repetitions each
 n <- 2^min_sam_size
+Nmax <- max(Nvals)
 
 data <- sim.data(tmax, Delta, sigma)
 x <- data$x
@@ -186,11 +187,11 @@ SMC_treeht_reps <- function(y, i, j, Nvals, cond_states){
 }
 
 ## find states to condition on
-cond_run <- stdSMC(N,y)
-cond_ind_sam <- sample(1:N, 1, prob=cond_run$weights[nrow(cond_run$weights),])
+cond_run <- stdSMC(Nmax,y)
+cond_ind_sam <- sample(1:Nmax, 1, prob=cond_run$weights[nrow(cond_run$weights),])
 cond_anc <- cond_run$ancestry
 class(cond_anc) <- 'genealogy'
-cond_anc@N <- as.integer(N)
+cond_anc@N <- as.integer(Nmax)
 cond_anc@Ngen <- as.integer(tmax)
 cond_anc_sam <- traceAncestry(cond_anc, sampl=cond_ind_sam)
 cond_states <- numeric(tmax+1)
@@ -200,7 +201,7 @@ for (t in 1:tmax){
 cond_states[tmax+1] <- cond_run$positions[tmax+1,cond_ind_sam]
 
 
-no_cores <- future::availableCores() -1  # if using desktop
+no_cores <- future::availableCores() # -1  # if using desktop
 registerDoParallel(makeCluster(no_cores, type='FORK', outfile="debug_file.txt"))
 
 for (i in 1:n_sam_size){
@@ -214,7 +215,7 @@ stopImplicitCluster()
 ## process results -----------------------
 
 # treeHeight <- read.csv("treeht_out.csv", header=FALSE)
-
+#
 # meanTreeHt <- apply(treeHeight,1,mean)
 # varTreeHt <- apply(treeHeight,1,var)
 # seTreeHt <- (varTreeHt/n.reps)^0.5
