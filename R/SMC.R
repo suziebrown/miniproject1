@@ -69,7 +69,7 @@ standard_SMC <- function(n_particles, observations, emission_density, transition
 #' @export conditional_SMC
 #'
 
-conditional_SMC <- function(n_particles, observations, cond_trajectory, emission_density, ...){
+conditional_SMC <- function(n_particles, observations, cond_trajectory, emission_density, transition_sam, initial_sam, ...){
   n_obs <- length(observations)
   ancestors <- matrix(NA, nrow = n_obs - 1, ncol = n_particles)
   positions <- matrix(NA, nrow = n_obs, ncol = n_particles)

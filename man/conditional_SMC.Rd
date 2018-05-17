@@ -5,7 +5,7 @@
 \title{Conditional SMC algorithm}
 \usage{
 conditional_SMC(n_particles, observations, cond_trajectory, emission_density,
-  ...)
+  transition_sam, initial_sam, ...)
 }
 \arguments{
 \item{n_particles}{number of particles}
@@ -16,12 +16,12 @@ conditional_SMC(n_particles, observations, cond_trajectory, emission_density,
 
 \item{emission_density}{a function of the form f(y,x) giving the emission density of y|x}
 
-\item{...}{arguments to be passed to emission_density, transition_sam and initial_sam
-(e.g. for Ornstein-Uhlenbeck process, provide values for sigma and delta)}
-
 \item{transition_sam}{a function of the form f(x) sampling a new position, i.e. propagating the particle}
 
 \item{initial_sam}{a function of the form f() sampling the initial positions}
+
+\item{...}{arguments to be passed to emission_density, transition_sam and initial_sam
+(e.g. for Ornstein-Uhlenbeck process, provide values for sigma and delta)}
 }
 \value{
 a list containing matrices of positions and weights
