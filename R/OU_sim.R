@@ -22,7 +22,7 @@ ou_sim <- function(n_obs, delta, sigma, return_states = FALSE){
   states[1] <- rnorm(1)
   obs[1] <- rnorm(1, states[1], sigma)
   for (i in 2:(n_obs+1)){
-    states[i] <- rnorm(1, (1 - delta) * states[i-1], delta ^ (0.5))
+    states[i] <- rnorm(1, (1 - delta) * states[i-1], delta ^ 0.5)
     obs[i] <- rnorm(1, states[i], sigma)
   }
 
