@@ -1,6 +1,158 @@
 ## EXPERIMENTS (new tidier source!)
 
 
+## Function dependencies -----------------
+
+standard_SMC <- function(n_particles, observations, emission_density, transition_sam, initial_sam, ...){
+  n_obs <- length(observations)
+  ancestors <- matrix(NA, nrow = n_obs - 1, ncol = n_particles)
+  positions <- matrix(NA, nrow = n_obs, ncol = n_particles)
+  weights <- matrix(NA, nrow = n_obs, ncol = n_particles)
+
+  ## Initial states
+  positions[1, ] <- initial_sam(n_particles, ...)
+  weights_tmp <- emission_density(observations[1], positions[1, ], ...)
+  weights[1, ] <- weights_tmp / sum(weights_tmp)
+
+  for (t in 2:(n_obs)){
+    ## Resample
+    ancestors[t-1, ] <- sample(1:n_particles, n_particles, prob=weights_tmp, replace=TRUE)
+    positions_tmp <- positions[t-1, ancestors[t-1, ]]
+
+    ## Propagate
+    positions[t, ] <- transition_sam(positions_tmp, ...)
+
+    ## Calculate importance weights
+    weights_tmp <- emission_density(observations[t], positions[t, ], ...)
+    weights[t, ] <- weights_tmp / sum(weights_tmp)
+  }
+
+  list(positions = positions, weights = weights, ancestors = ancestors)
+}
+
+conditional_SMC <- function(n_particles, observations, cond_trajectory, emission_density, transition_sam, initial_sam, ...){
+  n_obs <- length(observations)
+  ancestors <- matrix(NA, nrow = n_obs - 1, ncol = n_particles)
+  positions <- matrix(NA, nrow = n_obs, ncol = n_particles)
+  weights <- matrix(NA, nrow = n_obs, ncol = n_particles)
+
+  ## Initial states
+  positions[1, 1] <- cond_trajectory[1]
+  positions[1, 2:n_particles] <- initial_sam(n_particles - 1, ...)
+  weights_tmp <- emission_density(observations[1], positions[1, ], ...)
+  weights[1, ] <- weights_tmp / sum(weights_tmp)
+
+  for (t in 2:(n_obs)){
+    ## Resample
+    ancestors[t-1, ] <- sample(1:n_particles, n_particles, prob=weights_tmp, replace=TRUE)
+    ancestors[t-1, 1] <- 1
+    positions_tmp <- positions[t-1, ancestors[t-1, ]]
+
+    ## Propagate
+    positions[t, 2:n_particles] <- transition_sam(positions_tmp[2:n_particles], ...)
+    positions[t, 1] <- cond_trajectory[t]
+
+    ## Calculate importance weights
+    weights_tmp <- emission_density(observations[t], positions[t, ], ...)
+    weights[t, ] <- weights_tmp / sum(weights_tmp)
+  }
+
+  list(positions = positions, weights = weights, ancestors = ancestors)
+}
+
+ancestrySize <- function(history, sampl=NULL, maxgen=NULL){
+  N <- attr(history, 'N')
+  N.gen <- (attr(history, 'Ngen'))
+  min.gen <- max(1, N.gen-maxgen)
+  if (is.null(sampl)){
+    sampl <- 1:N
+    n <- N
+  }
+  else{
+    n <- length(sampl)
+  }
+
+  Size <- rep(NA, N.gen)
+  Size[N.gen] <- n
+  ancestry <- sampl
+  MRCA <- NA
+
+  for (t in ((N.gen-1):min.gen)){
+    ancestry <- history[t,unique(ancestry)] ## find ancestors of current sample
+    Size[t] <- length(unique(ancestry))
+    if (is.na(MRCA)){ ## once MRCA is reached, can exit loop & set all previous generations to 1
+      if (Size[t]==1){
+        MRCA <- t
+        break
+      }
+    }
+  }
+  if (!is.na(MRCA)){ ## set size to 1 for all generations above MRCA
+    Size[min.gen:(MRCA-1)] <- rep(1, MRCA-1)
+  }
+
+  list(familySize=Size, treeHeight=N.gen-MRCA)
+}
+
+traceAncestry <- function(history, sampl, maxgen=NULL){
+  n <- length(sampl)
+  N <- attr(history, 'N')
+  N.gen <- (attr(history, 'Ngen'))
+  min.gen <- max(1, N.gen-maxgen)
+
+  ancestry <- matrix(NA, nrow=N.gen, ncol=n)
+  ancestry[N.gen,] <- sort(sampl)
+  MRCA <- NA
+
+  for (t in ((N.gen-1):min.gen)){ ## try eliminating the for loops
+    for (i in 1:n){
+      ancestry[t,i] <- history[t,ancestry[t+1,i]]
+    }
+    if (is.na(MRCA)){
+      if (length(unique(ancestry[t,]))==1){
+        MRCA <- t ## could leave NAs above once MRCA is found?
+      }
+    }
+  }
+  class(ancestry) <- 'samplegenealogy'
+  ancestry@samplesize <- n
+  ancestry@sample <- sampl
+  ancestry@MRCA <- as.integer(MRCA)
+  ancestry@history <- unclass(history)
+  ancestry
+}
+
+ou_sim <- function(n_obs, delta, sigma, return_states = FALSE) {
+  states <- numeric(n_obs+1)
+  obs <- numeric(n_obs+1)
+
+  states[1] <- rnorm(1)
+  obs[1] <- rnorm(1, states[1], sigma)
+  for (i in 2:(n_obs+1)) {
+    states[i] <- rnorm(1, (1 - delta) * states[i-1], delta ^ 0.5)
+    obs[i] <- rnorm(1, states[i], sigma)
+  }
+
+  if (return_states) {
+    return(list(states = states, observations = obs))
+  }else{
+    return(obs)
+  }
+}
+
+ou_emission_density <- function(observation, position, delta, sigma) {
+  (2 * pi) ^ (-0.5) * sigma ^ (-1) * exp(-(observation - position) ^ 2 / (2 * sigma ^ 2))
+}
+
+ou_transition_sam <- function(pos_old, delta, sigma) {
+  rnorm(length(pos_old), (1 - delta) * pos_old, delta ^ 0.5)
+}
+
+ou_initial_sam <- function(n_particles, delta, sigma) {
+  rnorm(n_particles)
+}
+
+
 ## Initialise variables ------------------
 
 log_n_particles_vals <- 4:8
