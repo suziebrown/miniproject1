@@ -41,6 +41,6 @@ ou_transition_sam <- function(pos_old, delta, sigma) {
   rnorm(length(pos_old), (1 - delta) * pos_old, delta ^ 0.5)
 }
 
-ou_initial_sam <- function(n_particles, ...) {
+ou_initial_sam <- function(n_particles, delta, sigma) {
   rnorm(n_particles)
 }
