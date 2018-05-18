@@ -1,5 +1,6 @@
 ## EXPERIMENTS (new tidier source!)
 
+rm(list = ls())
 
 ## Required packages ---------------------
 
@@ -38,17 +39,39 @@ standard_SMC <- function(n_particles, observations, emission_density, transition
   list(positions = positions, weights = weights, ancestors = ancestors)
 }
 
+standard_SMC_anc <- function(n_particles, observations, emission_density, transition_sam, initial_sam, ...){
+  n_obs <- length(observations)
+  ancestors <- matrix(NA, nrow = n_obs - 1, ncol = n_particles)
+  positions <- numeric(n_particles)
+
+  ## Initial states
+  positions <- initial_sam(n_particles, ...)
+  weights_tmp <- emission_density(observations[1], positions, ...)
+
+  for (t in 2:(n_obs)){
+    ## Resample
+    ancestors[t-1, ] <- sample(1:n_particles, n_particles, prob=weights_tmp, replace=TRUE)
+    positions_tmp <- positions[ancestors[t-1, ]]
+
+    ## Propagate
+    positions <- transition_sam(positions_tmp, ...)
+
+    ## Calculate importance weights
+    weights_tmp <- emission_density(observations[t], positions, ...)
+  }
+
+  ancestors
+}
+
 conditional_SMC_anc <- function(n_particles, observations, cond_trajectory, emission_density, transition_sam, initial_sam, ...){
   n_obs <- length(observations)
   ancestors <- matrix(NA, nrow = n_obs - 1, ncol = n_particles)
   positions <- numeric(n_particles)
-  weights <- numeric(n_particles)
 
   ## Initial states
   positions[1] <- cond_trajectory[1]
   positions[2:n_particles] <- initial_sam(n_particles - 1, ...)
   weights_tmp <- emission_density(observations[1], positions, ...)
-  weights <- weights_tmp / sum(weights_tmp)
 
   for (t in 2:(n_obs)){
     ## Resample
@@ -62,7 +85,6 @@ conditional_SMC_anc <- function(n_particles, observations, cond_trajectory, emis
 
     ## Calculate importance weights
     weights_tmp <- emission_density(observations[t], positions, ...)
-    weights <- weights_tmp / sum(weights_tmp)
   }
 
   ancestors
@@ -166,10 +188,14 @@ setClass("samplegenealogy", representation(ancestry="matrix", samplesize="intege
 
 ## Initialise variables ------------------
 
-log_n_particles_vals <- 4:15
-n_particles_vals <- 2 ^ (log_n_particles_vals)
+## logarithmic series:
+# log_n_particles_vals <- 4:12
+# n_particles_vals <- 2 ^ (log_n_particles_vals)
+# n_leaves <- n_particles_vals[1]
 
-n_leaves <- n_particles_vals[1]
+## linear series:
+n_leaves <- 16
+n_particles_vals <- seq(from = 256, to = 4096, by = 256)
 
 n_reps <- 100
 
@@ -181,7 +207,7 @@ n_obs <- 2 * n_particles_vals[length(n_particles_vals)]
 
 ou_data <- ou_sim(n_obs, delta, sigma)
 
-
+### Conditional SMC ======================
 ## Generate immortal trajectory ----------
 
 std_n_particles <- 100
@@ -201,7 +227,6 @@ for (t in 1:(n_obs - 1)) {
   imtl_states[t] <- std_smc$positions[t, imtl_anc[t]]
 }
 imtl_states[n_obs] <- std_smc$positions[n_obs, imtl_index]
-
 
 ## Run simulations -----------------------
 
@@ -225,16 +250,52 @@ for (i in 1:length(n_particles_vals)) {
 
 stopImplicitCluster()
 
+# ## Process results -----------------------
+#
+# tree_height <- read.csv("treeht_out.csv", header=FALSE)
+#
+# mean_tree_ht <- apply(tree_height, 1, mean)
+# var_tree_ht <- apply(tree_height, 1, var)
+# se_tree_ht <- (var_tree_ht / n_reps) ^ 0.5
+#
+# plot(n_particles_vals, mean_tree_ht / n_particles_vals, ylim = c(0.25, 0.45), type = 'b', pch = 16, col = 2, lwd = 2, xlab = "number of particles", ylab = "mean tree height / no. particles", main = paste("Tree height profile: conditional SMC, no. leaves=", n_leaves))
+# lines(n_particles_vals, (mean_tree_ht - se_tree_ht) / n_particles_vals, col = 2, lty = 2)
+# lines(n_particles_vals, (mean_tree_ht + se_tree_ht) / n_particles_vals, col = 2, lty = 2)
+# legend("topright", c("mean", "+/- 1 std err"), lty = c(1, 2), lwd = c(2,1), col = 2, pch = c(16, NA))
+#
 
+# ### Standard SMC ======================
+# ## Run simulations -----------------------
+#
+# treeht_iters <- function(data, j, n_particles, imtl_states){
+#   anc <- standard_SMC_anc(n_particles, data, ou_emission_density, ou_transition_sam, ou_initial_sam, sigma = sigma, delta = delta)
+#
+#   class(anc) <- 'genealogy'
+#   anc@N <- as.integer(n_particles)
+#   anc@Ngen <- as.integer(n_obs - 1)
+#
+#   ancestrySize_treeht(anc, sampl=sample(1:n_particles, n_leaves, replace=F))
+# }
+#
+# no_cores <- future::availableCores()
+# registerDoParallel(makeCluster(no_cores, type='FORK', outfile="debug_file.txt"))
+#
+# for (i in 1:length(n_particles_vals)) {
+#   tree_height <- foreach(j = 1:n_reps, .combine = c)  %dorng% treeht_iters(ou_data, j, n_particles_vals[i], imtl_states)
+#   write.table(t(tree_height), file="treeht_out.csv", sep=",", append=TRUE, row.names=FALSE, col.names=FALSE)
+# }
+#
+# stopImplicitCluster()
+#
 ## Process results -----------------------
 
-tree_height <- read.csv("treeht_out.csv", header=FALSE)
-
-mean_tree_ht <- apply(tree_height, 1, mean)
-var_tree_ht <- apply(tree_height, 1, var)
-se_tree_ht <- (var_tree_ht / n_reps) ^ 0.5
-
-plot(n_particles_vals, mean_tree_ht / n_particles_vals, type = 'b', pch = 16, col = 2, lwd = 2, xlab = "number of particles", ylab = "mean tree height / no. particles", main = paste("Tree height profile: conditional SMC, no. leaves=", n_leaves))
-lines(n_particles_vals, (mean_tree_ht - se_tree_ht) / n_particles_vals, col = 2, lty = 2)
-lines(n_particles_vals, (mean_tree_ht + se_tree_ht) / n_particles_vals, col = 2, lty = 2)
-legend("topright", c("mean", "+/- 1 std err"), lty = c(1, 2), lwd = c(2,1), col = 2, pch = c(16, NA))
+# tree_height <- read.csv("treeht_out.csv", header=FALSE)
+#
+# mean_tree_ht <- apply(tree_height, 1, mean)
+# var_tree_ht <- apply(tree_height, 1, var)
+# se_tree_ht <- (var_tree_ht / n_reps) ^ 0.5
+#
+# plot(n_particles_vals, mean_tree_ht / n_particles_vals, ylim=c(0.1, 0.3), type = 'b', pch = 16, col = 2, lwd = 2, xlab = "number of particles", ylab = "mean tree height / no. particles", main = paste("Tree height profile: standard SMC, no. leaves=", n_leaves))
+# lines(n_particles_vals, (mean_tree_ht - se_tree_ht) / n_particles_vals, col = 2, lty = 2)
+# lines(n_particles_vals, (mean_tree_ht + se_tree_ht) / n_particles_vals, col = 2, lty = 2)
+# legend("topright", c("mean", "+/- 1 std err"), lty = c(1, 2), lwd = c(2,1), col = 2, pch = c(16, NA))
