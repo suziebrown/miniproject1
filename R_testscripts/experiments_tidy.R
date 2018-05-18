@@ -38,37 +38,37 @@ standard_SMC <- function(n_particles, observations, emission_density, transition
   list(positions = positions, weights = weights, ancestors = ancestors)
 }
 
-conditional_SMC <- function(n_particles, observations, cond_trajectory, emission_density, transition_sam, initial_sam, ...){
+conditional_SMC_anc <- function(n_particles, observations, cond_trajectory, emission_density, transition_sam, initial_sam, ...){
   n_obs <- length(observations)
   ancestors <- matrix(NA, nrow = n_obs - 1, ncol = n_particles)
-  positions <- matrix(NA, nrow = n_obs, ncol = n_particles)
-  weights <- matrix(NA, nrow = n_obs, ncol = n_particles)
+  positions <- numeric(n_particles)
+  weights <- numeric(n_particles)
 
   ## Initial states
-  positions[1, 1] <- cond_trajectory[1]
-  positions[1, 2:n_particles] <- initial_sam(n_particles - 1, ...)
-  weights_tmp <- emission_density(observations[1], positions[1, ], ...)
-  weights[1, ] <- weights_tmp / sum(weights_tmp)
+  positions[1] <- cond_trajectory[1]
+  positions[2:n_particles] <- initial_sam(n_particles - 1, ...)
+  weights_tmp <- emission_density(observations[1], positions, ...)
+  weights <- weights_tmp / sum(weights_tmp)
 
   for (t in 2:(n_obs)){
     ## Resample
     ancestors[t-1, ] <- sample(1:n_particles, n_particles, prob=weights_tmp, replace=TRUE)
     ancestors[t-1, 1] <- 1
-    positions_tmp <- positions[t-1, ancestors[t-1, ]]
+    positions_tmp <- positions[ancestors[t-1, ]]
 
     ## Propagate
-    positions[t, 2:n_particles] <- transition_sam(positions_tmp[2:n_particles], ...)
-    positions[t, 1] <- cond_trajectory[t]
+    positions[2:n_particles] <- transition_sam(positions_tmp[2:n_particles], ...)
+    positions[1] <- cond_trajectory[t]
 
     ## Calculate importance weights
-    weights_tmp <- emission_density(observations[t], positions[t, ], ...)
-    weights[t, ] <- weights_tmp / sum(weights_tmp)
+    weights_tmp <- emission_density(observations[t], positions, ...)
+    weights <- weights_tmp / sum(weights_tmp)
   }
 
-  list(positions = positions, weights = weights, ancestors = ancestors)
+  ancestors
 }
 
-ancestrySize <- function(history, sampl=NULL, maxgen=NULL){
+ancestrySize_treeht <- function(history, sampl=NULL, maxgen=NULL){
   N <- attr(history, 'N')
   N.gen <- (attr(history, 'Ngen'))
   min.gen <- max(1, N.gen-maxgen)
@@ -99,7 +99,7 @@ ancestrySize <- function(history, sampl=NULL, maxgen=NULL){
     Size[min.gen:(MRCA-1)] <- rep(1, MRCA-1)
   }
 
-  list(familySize=Size, treeHeight=N.gen-MRCA)
+  N.gen-MRCA
 }
 
 traceAncestry <- function(history, sampl, maxgen=NULL){
@@ -166,7 +166,7 @@ setClass("samplegenealogy", representation(ancestry="matrix", samplesize="intege
 
 ## Initialise variables ------------------
 
-log_n_particles_vals <- 4:8
+log_n_particles_vals <- 4:15
 n_particles_vals <- 2 ^ (log_n_particles_vals)
 
 n_leaves <- n_particles_vals[1]
@@ -177,7 +177,7 @@ n_reps <- 100
 
 delta <- 0.1
 sigma <- 0.1
-n_obs <- n_particles_vals[length(n_particles_vals)]
+n_obs <- 2 * n_particles_vals[length(n_particles_vals)]
 
 ou_data <- ou_sim(n_obs, delta, sigma)
 
@@ -206,14 +206,13 @@ imtl_states[n_obs] <- std_smc$positions[n_obs, imtl_index]
 ## Run simulations -----------------------
 
 treeht_iters <- function(data, j, n_particles, imtl_states){
-  smc_sam <- conditional_SMC(n_particles, data, imtl_states, ou_emission_density, ou_transition_sam, ou_initial_sam, sigma = sigma, delta = delta)
+  anc <- conditional_SMC_anc(n_particles, data, imtl_states, ou_emission_density, ou_transition_sam, ou_initial_sam, sigma = sigma, delta = delta)
 
-  anc <- smc_sam$ancestors
   class(anc) <- 'genealogy'
   anc@N <- as.integer(n_particles)
   anc@Ngen <- as.integer(n_obs - 1)
 
-  ancestrySize(anc, sampl=sample(1:n_particles, n_leaves, replace=F))$treeHeight
+  ancestrySize_treeht(anc, sampl=sample(1:n_particles, n_leaves, replace=F))
 }
 
 no_cores <- future::availableCores()
