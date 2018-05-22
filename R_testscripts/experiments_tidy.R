@@ -233,7 +233,7 @@ n_reps <- 100
 
 delta <- 0.1
 sigma <- 0.1
-n_obs <- 2 * n_particles_vals[length(n_particles_vals)]
+n_obs <- 4 * n_particles_vals[length(n_particles_vals)]
 
 ou_data <- ou_sim(n_obs, delta, sigma)
 
@@ -263,7 +263,7 @@ ou_data <- ou_sim(n_obs, delta, sigma)
 ## Generate immortal trajectory ----------
 ## (using the Kalman filter solution)
 
-n_sd_away <- 0 ## conditioned trajectory should be how many SDs away from the MAP smoothed trajectory?
+n_sd_away <- 3 ## conditioned trajectory should be how many SDs away from the MAP smoothed trajectory?
 
 rts <- ou_rts_smooth(ou_data, delta, sigma)
 rts_mean <- rts$mean
@@ -289,7 +289,7 @@ registerDoParallel(makeCluster(no_cores, type='FORK', outfile="debug_file.txt"))
 
 for (i in 1:length(n_particles_vals)) {
   tree_height <- foreach(j = 1:n_reps, .combine = c)  %dorng% treeht_iters(ou_data, j, n_particles_vals[i], imtl_states)
-  write.table(t(tree_height), file="treeht_out.csv", sep=",", append=TRUE, row.names=FALSE, col.names=FALSE)
+  write.table(t(tree_height), file="treeht_out_3.csv", sep=",", append=TRUE, row.names=FALSE, col.names=FALSE)
 }
 
 stopImplicitCluster()
@@ -333,13 +333,43 @@ stopImplicitCluster()
 #
 ## Process results -----------------------
 
-# tree_height <- read.csv("treeht_out.csv", header=FALSE)
-#
-# mean_tree_ht <- apply(tree_height, 1, mean)
-# var_tree_ht <- apply(tree_height, 1, var)
-# se_tree_ht <- (var_tree_ht / n_reps) ^ 0.5
-#
-# plot(n_particles_vals, mean_tree_ht / n_particles_vals, ylim=c(0.1, 0.3), type = 'b', pch = 16, col = 2, lwd = 2, xlab = "number of particles", ylab = "mean tree height / no. particles", main = paste("Tree height profile: standard SMC, no. leaves=", n_leaves))
-# lines(n_particles_vals, (mean_tree_ht - se_tree_ht) / n_particles_vals, col = 2, lty = 2)
-# lines(n_particles_vals, (mean_tree_ht + se_tree_ht) / n_particles_vals, col = 2, lty = 2)
-# legend("topright", c("mean", "+/- 1 std err"), lty = c(1, 2), lwd = c(2,1), col = 2, pch = c(16, NA))
+par(mfrow = c(1, 1))
+
+tree_height0 <- read.csv("treeht_out_0sd.csv", header=FALSE)
+tree_height1 <- read.csv("treeht_out_1sd.csv", header=FALSE)
+tree_height2 <- read.csv("treeht_out_2sd.csv", header=FALSE)
+tree_height3 <- read.csv("treeht_out_3sd.csv", header=FALSE)
+
+mean_tree_ht0 <- apply(tree_height0, 1, mean)
+var_tree_ht0 <- apply(tree_height0, 1, var)
+se_tree_ht0 <- (var_tree_ht0 / n_reps) ^ 0.5
+
+mean_tree_ht1 <- apply(tree_height1, 1, mean)
+var_tree_ht1 <- apply(tree_height1, 1, var)
+se_tree_ht1 <- (var_tree_ht1 / n_reps) ^ 0.5
+
+mean_tree_ht2 <- apply(tree_height2, 1, mean)
+var_tree_ht2 <- apply(tree_height2, 1, var)
+se_tree_ht2 <- (var_tree_ht2 / n_reps) ^ 0.5
+
+mean_tree_ht3 <- apply(tree_height3, 1, mean)
+var_tree_ht3 <- apply(tree_height3, 1, var)
+se_tree_ht3 <- (var_tree_ht3 / n_reps) ^ 0.5
+
+plot(n_particles_vals, mean_tree_ht0 / n_particles_vals, ylim=c(0.1, 2.3), type = 'b', pch = 16, col = 'red', lwd = 2, xlab = "number of particles", ylab = "mean tree height / no. particles", main = paste("Conditional SMC, no. leaves=", n_leaves))
+lines(n_particles_vals, (mean_tree_ht0 - se_tree_ht0) / n_particles_vals, col = 'red', lty = 2)
+lines(n_particles_vals, (mean_tree_ht0 + se_tree_ht0) / n_particles_vals, col = 'red', lty = 2)
+
+lines(n_particles_vals, mean_tree_ht1 / n_particles_vals, type = 'b', pch = 16, col = 'purple', lwd = 2)
+lines(n_particles_vals, (mean_tree_ht1 - se_tree_ht1) / n_particles_vals, col = 'purple', lty = 2)
+lines(n_particles_vals, (mean_tree_ht1 + se_tree_ht1) / n_particles_vals, col = 'purple', lty = 2)
+
+lines(n_particles_vals, mean_tree_ht2 / n_particles_vals, type = 'b', pch = 16, col = 'blue', lwd = 2)
+lines(n_particles_vals, (mean_tree_ht2 - se_tree_ht2) / n_particles_vals, col = 'blue', lty = 2)
+lines(n_particles_vals, (mean_tree_ht2 + se_tree_ht2) / n_particles_vals, col = 'blue', lty = 2)
+
+lines(n_particles_vals, mean_tree_ht3 / n_particles_vals, type = 'b', pch = 16, col = 'darkgreen', lwd = 2)
+lines(n_particles_vals, (mean_tree_ht3 - se_tree_ht3) / n_particles_vals, col = 'darkgreen', lty = 2)
+lines(n_particles_vals, (mean_tree_ht3 + se_tree_ht3) / n_particles_vals, col = 'darkgreen', lty = 2)
+
+legend("topright", c("MAP", "MAP+1SD", "MAP+2SD", "MAP+3SD"), lty = 1, lwd = 2, col = c('red', 'purple', 'blue', 'darkgreen'), pch = 16)
