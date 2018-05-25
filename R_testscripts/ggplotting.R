@@ -48,25 +48,27 @@ par(mfrow = c(1, 1))
 
 ## USE THIS ONE --------------------
 
+n_reps <- 100
+
 tree_height0 <- read.csv("Sim_data/n_16/treeht_out_0sd.csv", header=FALSE)
 tree_height1 <- read.csv("Sim_data/n_16/treeht_out_1sd.csv", header=FALSE)
 tree_height2 <- read.csv("Sim_data/n_16/treeht_out_2sd.csv", header=FALSE)
 tree_height3 <- read.csv("Sim_data/n_16/treeht_out_3sd.csv", header=FALSE)
 
-mean_tree_ht0 <- apply(tree_height0, 1, mean)
-var_tree_ht0 <- apply(tree_height0, 1, var)
+mean_tree_ht0 <- apply(tree_height0, 1, mean, na.rm=T)
+var_tree_ht0 <- apply(tree_height0, 1, var, na.rm=T)
 se_tree_ht0 <- (var_tree_ht0 / n_reps) ^ 0.5
 
-mean_tree_ht1 <- apply(tree_height1, 1, mean)
-var_tree_ht1 <- apply(tree_height1, 1, var)
+mean_tree_ht1 <- apply(tree_height1, 1, mean, na.rm=T)
+var_tree_ht1 <- apply(tree_height1, 1, var, na.rm=T)
 se_tree_ht1 <- (var_tree_ht1 / n_reps) ^ 0.5
 
-mean_tree_ht2 <- apply(tree_height2, 1, mean)
-var_tree_ht2 <- apply(tree_height2, 1, var)
+mean_tree_ht2 <- apply(tree_height2, 1, mean, na.rm=T)
+var_tree_ht2 <- apply(tree_height2, 1, var, na.rm=T)
 se_tree_ht2 <- (var_tree_ht2 / n_reps) ^ 0.5
 
-mean_tree_ht3 <- apply(tree_height3, 1, mean)
-var_tree_ht3 <- apply(tree_height3, 1, var)
+mean_tree_ht3 <- apply(tree_height3, 1, mean, na.rm=T)
+var_tree_ht3 <- apply(tree_height3, 1, var, na.rm=T)
 se_tree_ht3 <- (var_tree_ht3 / n_reps) ^ 0.5
 
 df <- data.frame(npart = rep(seq(from = 256, to = 4096, by = 256), 4),
@@ -81,7 +83,7 @@ ggplot(df, aes(npart, meanht / npart)) +
                   alpha=0.3) +
   xlab("number of particles") +
   ylab("mean tree height / n. particles") +
-  ggtitle("Tree height profile: conditional SMC, n. leaves =16")
+  ggtitle("Tree height profile: conditional SMC, n. leaves=16")
 
 # # ------------------
 # # using median and quatiles instead of mean +/- SE
