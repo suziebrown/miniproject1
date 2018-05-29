@@ -1,0 +1,38 @@
+\begin{thebibliography}{xx}
+
+\harvarditem[Andrieu et~al.]{Andrieu, Doucet \harvardand\
+  Holenstein}{2010}{andrieu2010}
+Andrieu, C., Doucet, A. \harvardand\ Holenstein, R.  \harvardyearleft
+  2010\harvardyearright , `Particle markov chain monte carlo methods', {\em
+  Journal of the Royal Statistical Society: Series B (Statistical Methodology)}
+  {\bf 72}(3),~269--342.
+
+\harvarditem{Kingman}{1982{\em a}}{kingman1982coal}
+Kingman, J.  \harvardyearleft 1982{\em a}\harvardyearright , `The coalescent',
+  {\em Stochastic processes and their applications} {\bf 13}(3),~235--248.
+
+\harvarditem{Kingman}{1982{\em b}}{kingman1982exch}
+Kingman, J.  \harvardyearleft 1982{\em b}\harvardyearright , `Exchangeability
+  and the evolution of large populations'.
+
+\harvarditem{Kingman}{1982{\em c}}{kingman1982gene}
+Kingman, J.  \harvardyearleft 1982{\em c}\harvardyearright , `On the genealogy
+  of large populations', {\em Journal of Applied Probability} {\bf
+  19}(A),~27--43.
+
+\harvarditem[Koskela et~al.]{Koskela, Jenkins, Johansen \harvardand\
+  Spano}{2018}{koskela2018}
+Koskela, J., Jenkins, P.~A., Johansen, A.~M. \harvardand\ Spano, D.
+  \harvardyearleft 2018\harvardyearright , `Asymptotic genealogies of
+  interacting particle systems with an application to sequential monte carlo',
+  {\em arXiv preprint arXiv:1804.01811} .
+
+\harvarditem{M{\"o}hle}{1998}{mohle1998}
+M{\"o}hle, M.  \harvardyearleft 1998\harvardyearright , `Robustness results for
+  the coalescent', {\em Journal of applied probability} {\bf 35}(2),~438--447.
+
+\harvarditem{Wakeley}{2009}{wakeley2009}
+Wakeley, J.  \harvardyearleft 2009\harvardyearright , {\em Coalescent theory:
+  an introduction}, number 575: 519.2 WAK.
+
+\end{thebibliography}

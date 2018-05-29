@@ -43,19 +43,85 @@ The Wright-Fisher model, popular in the analysis of population genetics, bears s
 
 It seems then that the myriad tools and results developed for this model by population geneticists should be seamlessly transferable to the analysis of SMC genealogies. In reality, a significant alteration must be made to the standard Wright-Fisher model before it can be of use in this context: the offspring distributions of each particle are not exchangeable, because broadly speaking, offspring of parents with high weight will tend to have high weight themselves. This follows intuitively from the notion that propagating a particle from a high density region at time $t$ will result in a new state that is close to the high density region at time $t+1$.
 
-This effect can naturally be interpreted in the population genetics framework as the existence of a hereditary trait whose value affects fertility. A typical and well-studied question in the population genetics literature addresses the proliferation of such a trait [REF]. For example, in the Wright-Fisher model it is possible to study the dynamics of the proportion of the population having the trait of interest, ultimately in the limit as the number of generations goes to infinity. However, the question of how prevalent the ``high density'' trait may be in our population of particles is tangential to our focus (the resampling step is constructed in such a way as to maintain the desired dynamics, i.e.\ consistent estimation of the target distribution). Our interests lie instead with the genealogy of the particles, regardless of the properties they thus inherit.
-
-
+This effect can naturally be interpreted in the population genetics framework as the existence of a hereditary trait whose value affects fertility. A typical and well-studied question in the population genetics literature addresses the proliferation of such a trait \citep[Chapter 3]{wakeley2009}. For example, in the Wright-Fisher model it is possible to study the dynamics of the proportion of the population having the trait of interest, ultimately in the limit as the number of generations goes to infinity. However, the question of how prevalent the ``high density'' trait may be in our population of particles is tangential to our focus (the resampling step is constructed in such a way as to maintain the desired dynamics, i.e.\ consistent estimation of the target distribution). Our interests lie instead with the genealogy of the particles, regardless of the properties they thus inherit.
 
 
 \section{Previous work}
+Kingman \citep{kingman1982gene, kingman1982coal, kingman1982exch} studied the asymptotic properties of the genealogies arising in a number of exchangeable population models, including the standard Wright-Fisher model. He showed that they each converge in the limit $N\to\infty$ (with appropriate time rescaling) to a Markov process termed the $n$-coalescent. By studying this limiting process, he was able to establish some new results about the behaviour of such populations, and produce novel derivations of some known results.
+
+\citet{mohle1998} extends this result to a class of non-exchangeable models, with the assumption that offspring distributions are independent between different generations. This allows application to more complex and realistic population models; but is still too restrictive to cover SMC genealogies, which by construction have strong dependence between generations.
+
+Allowing for dependence between generations significantly complicates the computations, because the backwards (coalescent) process is no longer Markovian. \citet{koskela2018} addresses a first case of such models, applicable to a range of standard SMC procedures, under some reasonable conditions.
+
+We would like to extend to the case of conditional SMC, which differs substantially from the case of \citet{koskela2018} because there is a particular ancestral line that is conditioned to survive. This extension is important to make the results applicable to the particle Gibbs algorithm \citep{andrieu2010}, which is popular across a range of applications.
 
 \section{Theoretical results}
-
+We now consider extending the results of \citet{koskela2018} to the case of conditional SMC.
+In particular, the SMC updates will be conditioned on a particular trajectory surviving. We concentrate on the exchangeable model, so we may take WLOG that the ``immortal line'' is the trajectory containing individual 1 from each generation.
+We first assume the simplest case, with multinomial resampling; analogous to the standard SMC case where
+\begin{equation*}
+\vt{i} \eqdist \Bin (N, \wt{i}), \qquad i=1,\dots,N
+\end{equation*}
+yielding the coalescence rate
+\begin{equation}
+c_N(t) := \frac{1}{(N)_2} \sum_{i=1}^{N} \E\left[ (\vt{i})_2 \right] = \sum_{i=1}^{N} \E\left[(\wt{i})^2\right].
+\end{equation}
+But now, since the first line is immortal, in each time step the first individual must have at least one offspring. The remaining $N-1$ offspring are assigned multinomially to the $N$ possible parents as usual, giving the offspring numbers:
+\begin{align*}
+& \vttilde{1} \eqdist 1 + \Bin(N-1, \wt{1}) \\
+& \vttilde{i} \eqdist \Bin(N-1, \wt{i}), \qquad i=2,\dots,N.
+\end{align*}
+We therefore have the following moments (using tower property):
+\begin{align*}
+& \E[\vttilde{i}] = (N-1)\E[\wt{i}] &\\
+& \E[(\vttilde{i})^2] = (N-1)(N-2)\E[(\wt{i})^2] + (N-1)\E[\wt{i}] &\qquad i=2,\dots,N \\
+& \E[\vttilde{1}] = (N-1)\E[\wt{1}] + 1 \\
+& \E[(\vttilde{1})^2] = (N-1)(N-2)\E[(\wt{1})^2] + 3(N-1)\E[\wt{1}] + 1 &
+\end{align*}
+and we can derive the altered coalescence rate:
+\begin{align}
+\tilde{c}_N(t) &= \frac{1}{(N)_2} \sum_{i=1}^{N} \E\left[ (\vttilde{i})_2 \right] \notag\\
+&= \frac{1}{(N)_2} \E\left[ (\vttilde{1})^2 - \vttilde{1} \right] + \frac{1}{(N)_2}\sum_{i=2}^{N} \E\left[ (\vttilde{i})^2 - \vttilde{i} \right] \notag\\
+&= \frac{1}{(N)_2}\left[ (N-1)(N-2)\E[(\wt{1})^2] + 2(N-1)\E[\wt{1}] \right] + \frac{1}{(N)_2} \sum_{i=2}^{N} (N-1)(N-2)\E[(\wt{i})^2] \notag\\
+&= \frac{1}{(N)_2} \sum_{i=1}^{N} (N-1)(N-2)\E[(\wt{i})^2] + \frac{1}{(N)_2} 2(N-1)\E[\wt{1}] \notag\\
+&= \frac{N-2}{N} c_N(t) + \frac{2}{N} \E[\wt{1}]
+%&\overset{N\to\infty}{\longrightarrow} c_N(t) \notag
+\end{align}
+%Since $\wt{1} \leq 1$ for all $t$, as $N\to\infty$ we have
+%\begin{equation*}
+%\tilde{c}_N(t) - c_N(t) = O(N^{-1}).
+%\end{equation*}
+Under the conditions of \citet[Corollary 2]{koskela2018}, we have that $\E[\wt{1}] = O(N^{-1})$, and hence
+\begin{equation*}
+\tilde{c}_N(t) - c_N(t) = O(N^{-2}).
+\end{equation*}
+%\begin{equation*}
+%\tilde{c}_N(t) = \frac{N-2}{N} c_N(t) + O(N^{-2}) = c_N(t) + O \left( \frac{c_N(t)}{N} \right)
+%\end{equation*}
+\citet{koskela2018} gives the following bounds on $c_N(t)$:
+\begin{equation*}
+\frac{C_*}{N-1} \leq c_N(t) \leq \frac{C}{N-1}
+\end{equation*}
+Then, since $\tilde{c}_N(t)$ differs from $c_N(t)$ by $O(N^{-2})$, for sufficiently large $N$ there exist constants $\tilde{C}, \tilde{C}_*$ such that
+\begin{equation*}
+\frac{\tilde{C}_*}{N-1} \leq \tilde{c}_N(t) \leq \frac{\tilde{C}}{N-1}
+\end{equation*}
+and we can thus derive bounds analogous to \citet[(5)-(6)]{koskela2018}:
+\begin{align}
+\frac{N-1}{\tilde{C}_*}t &\leq \tilde{\tau}_N(t) \leq \frac{N-1}{\tilde{C}}t \label{eq:tau_bounds1}\\
+\frac{N-1}{\tilde{C}_*}(s-t) &\leq \tilde{\tau}_N(s) - \tilde{\tau}_N(t) \leq \frac{N-1}{\tilde{C}}(s-t) \label{eq:tau_bounds2}
+\end{align}
+Furthermore, we have that
+\begin{align*}
+\frac{\tilde{C}}{N-1} &= \frac{N-2}{N} \frac{C}{N-1} + O(N^{-2}) \\
+&= \frac{C}{N-1} + O(N^{-2})
+\end{align*}
+therefore $\tilde{C} - C = O(N^{-1})$ and similarly $\tilde{C}_* - C_* = O(N^{-1})$. Hence the bounds in \eqref{eq:tau_bounds1}, \eqref{eq:tau_bounds2} are asymptotically equal to \citet[(5)-(6)]{koskela2018}.
 \section{Simulation study}
 
 \subsection{Rauch-Tung-Striebel smoother}
 
 \section{Conclusions}
 
+\bibliography{smc.bib}
 \end{document}
