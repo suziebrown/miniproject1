@@ -49,7 +49,7 @@ We therefore have the following moments (using tower property):
 & \E[\vttilde{i}] = (N-1)\E[\wt{i}] &\\
 & \E[(\vttilde{i})^2] = (N-1)(N-2)\E[(\wt{i})^2] + (N-1)\E[\wt{i}] &\qquad i=2,\dots,N \\
 & \E[\vttilde{1}] = (N-1)\E[\wt{1}] + 1 \\
-& \E[(\vttilde{1})^2] = (N-1)(N-2)\E[(\wt{i})^2] + 3(N-1)\E[\wt{1}] + 1 &
+& \E[(\vttilde{1})^2] = (N-1)(N-2)\E[(\wt{1})^2] + 3(N-1)\E[\wt{1}] + 1 &
 \end{align*}
 and we can derive the altered coalescence rate:
 \begin{align}
@@ -60,19 +60,22 @@ and we can derive the altered coalescence rate:
 &= \frac{N-2}{N} c_N(t) + \frac{2}{N} \E[\wt{1}]
 %&\overset{N\to\infty}{\longrightarrow} c_N(t) \notag
 \end{align}
-Since $\wt{1} \leq 1$ for all $t$, as $N\to\infty$ we have
+%Since $\wt{1} \leq 1$ for all $t$, as $N\to\infty$ we have
+%\begin{equation*}
+%\tilde{c}_N(t) - c_N(t) = O(N^{-1}).
+%\end{equation*}
+Under the conditions of \citet[Corollary 2]{koskela2018}, we have that $\E[\wt{1}] = O(N^{-1})$, and hence
 \begin{equation*}
-\tilde{c}_N(t) - c_N(t) = O(N^{-1})
+\tilde{c}_N(t) - c_N(t) = O(N^{-2}).
 \end{equation*}
-Under the conditions on the weights $\wt{i}$ assumed in \citet{koskela2018}, we have that $\E[\wt{1}] = O(N^{-1})$, and hence
-\begin{equation*}
-\tilde{c}_N(t) = \frac{N-2}{N} c_N(t) + O(N^{-2}) = c_N(t) + O \left( \frac{c_N(t)}{N} \right)
-\end{equation*}
+%\begin{equation*}
+%\tilde{c}_N(t) = \frac{N-2}{N} c_N(t) + O(N^{-2}) = c_N(t) + O \left( \frac{c_N(t)}{N} \right)
+%\end{equation*}
 \citet{koskela2018} gives the following bounds on $c_N(t)$:
 \begin{equation*}
 \frac{C_*}{N-1} \leq c_N(t) \leq \frac{C}{N-1}
 \end{equation*}
-Then, since $\tilde{c}_N(t)$ differs from $c_N(t)$ by $O(N^{-1})$, for sufficiently large $N$ there exist constants $\tilde{C}, \tilde{C}_*$ such that
+Then, since $\tilde{c}_N(t)$ differs from $c_N(t)$ by $O(N^{-2})$, for sufficiently large $N$ there exist constants $\tilde{C}, \tilde{C}_*$ such that
 \begin{equation*}
 \frac{\tilde{C}_*}{N-1} \leq \tilde{c}_N(t) \leq \frac{\tilde{C}}{N-1}
 \end{equation*}
