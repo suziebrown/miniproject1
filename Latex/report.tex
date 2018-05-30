@@ -25,6 +25,7 @@
 \newcommand{\wt}[2][t]{w_{#1}^{(#2)}}
 \newcommand{\eqdist}{\overset{d}{=}}
 \newcommand{\Bin}{\operatorname{Bin}}
+\newcommand{\N}{\mathcal{N}}
 \newtheorem{thm}{Theorem}
 
 \begin{document}
@@ -49,7 +50,7 @@ This effect can naturally be interpreted in the population genetics framework as
 \section{Previous work}
 Kingman \citep{kingman1982gene, kingman1982coal, kingman1982exch} studied the asymptotic properties of the genealogies arising in a number of exchangeable population models, including the standard Wright-Fisher model. He showed that they each converge in the limit $N\to\infty$ (with appropriate time rescaling) to a Markov process termed the $n$-coalescent. By studying this limiting process, he was able to establish some new results about the behaviour of such populations, and produce novel derivations of some known results.
 
-\citet{mohle1998} extends this result to a class of non-exchangeable models, with the assumption that offspring distributions are independent between different generations. This allows application to more complex and realistic population models; but is still too restrictive to cover SMC genealogies, which by construction have strong dependence between generations.
+\citet{mohle1998} extends this result to a class of non-exchangeable models, with the assumption that offspring distributions are independent between different generations. This allows application to more complex population models; but is still too restrictive to cover SMC genealogies, which by construction have strong dependence between generations.
 
 Allowing for dependence between generations significantly complicates the computations, because the backwards (coalescent) process is no longer Markovian. \citet{koskela2018} addresses a first case of such models, applicable to a range of standard SMC procedures, under some reasonable conditions.
 
@@ -117,9 +118,39 @@ Furthermore, we have that
 &= \frac{C}{N-1} + O(N^{-2})
 \end{align*}
 therefore $\tilde{C} - C = O(N^{-1})$ and similarly $\tilde{C}_* - C_* = O(N^{-1})$. Hence the bounds in \eqref{eq:tau_bounds1}, \eqref{eq:tau_bounds2} are asymptotically equal to \citet[(5)-(6)]{koskela2018}.
-\section{Simulation study}
 
-\subsection{Rauch-Tung-Striebel smoother}
+\section{Simulation study}
+In order to determine how well the asymptotic results hold for finite $N$, we conducted a simulation study on the Ornstein-Uhlenbeck model, a ``simplest case'' hidden Markov model which is popular for such studies in the literature:
+\begin{align*}
+& X_0 \sim \N(0,1) \\
+& X_{t+1} \mid X_t \sim \N((1-\Delta)X_t, \Delta) \\
+& Y_t \mid X_{t} \sim \N(X_t, \sigma^2)
+\end{align*}
+with parameters $\Delta >0, \sigma >0$. 
+Following \citet{koskela2018}, we take $\Delta = \sigma = 0.1$ and generate one fixed sequence of observations for use in all SMC runs.
+The number of observations $T$ is taken such that, for all the choices of $n$ and $N$, the $T$ generations of SMC particles are enough for the $n$ sampled lineages to coalesce to one common ancestor (with high enough probability that it happens reliably on every repetition); ensuring that the tree height can always be recorded.
+
+For this toy model, the smoothing distribution is available analytically through the Rauch-Tung-Striebel (RTS) smoother \citep{rauch1965}. We exploited this solution to choose the ``immortal line'' on which to condition the conditional SMC updates. Because both the MAP estimate (equal to the mean since the distributions are Gaussian) and variance are available via the RTS smoother, we were able to produce a sequence of immortal lines of decreasing likelihood, by adding multiples of the standard deviation to the mean.
+
+We hypothesised that when $N$ is not too much bigger than $n$, an ``unlikely'' choice of the immortal line should produce qualitative differences in the tree height profile; because the$n$ lineages would often coalesce to the immortal line, which corresponds to an unlikely choice of ancestors under the unconditional algorithm. On the other hand, when $N$ is very large with respect to $n$, this effect should become less significant because the sampled lineages should usually coalesce before interacting with the immortal line.
+
+Figures \ref{fig:kalman_n16} and \ref{fig:kalman_n2} illustrate this distinction. Here we use a decrease in $n$ as a proxy for increasing $N$: over the same range of values for $N$, Figure \ref{fig:kalman_n16} shows the profile for sample size $n=16$, and Figure \ref{fig:kalman_n2} for $n=2$.
+We see clearly that in the case of $n=16$, the likelihood of the immortal line significantly affects the tree height profile, while for $n=2$ it makes no appreciable difference.
+
+In any case the mean tree height seems to be higher for conditional SMC (around 0.3) compared to standard SMC (around 0.2), although it is not yet entirely clear.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{kalman_n16_100reps_line.pdf}
+\caption{•}
+\label{fig:kalman_n16}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{kalman_n2_1000reps_line.pdf}
+\caption{•}
+\label{fig:kalman_n2}
+\end{figure}
 
 \section{Conclusions}
 
