@@ -152,24 +152,6 @@ traceAncestry <- function(history, sampl, maxgen=NULL){
   ancestry
 }
 
-ou_sim <- function(n_obs, delta, sigma, return_states = FALSE) {
-  states <- numeric(n_obs+1)
-  obs <- numeric(n_obs+1)
-
-  states[1] <- rnorm(1)
-  obs[1] <- rnorm(1, states[1], sigma)
-  for (i in 2:(n_obs+1)) {
-    states[i] <- rnorm(1, (1 - delta) * states[i-1], delta ^ 0.5)
-    obs[i] <- rnorm(1, states[i], sigma)
-  }
-
-  if (return_states) {
-    return(list(states = states, observations = obs))
-  }else{
-    return(obs)
-  }
-}
-
 ou_emission_density <- function(observation, position, delta, sigma) {
   (2 * pi) ^ (-0.5) * sigma ^ (-1) * exp(-(observation - position) ^ 2 / (2 * sigma ^ 2))
 }
@@ -229,13 +211,13 @@ n_particles_vals <- seq(from = 256, to = 4096, by = 256)
 n_reps <- 100
 
 
-## Generate synthetic data ---------------
+## Generate (now read in) synthetic data ---------------
 
 delta <- 0.1
 sigma <- 0.1
 n_obs <- 6 * n_particles_vals[length(n_particles_vals)]
 
-ou_data <- ou_sim(n_obs, delta, sigma)
+ou_data <- read.csv("oudata.csv", header = FALSE)
 
 ### Conditional SMC ======================
 ## Generate immortal trajectory ----------
@@ -282,7 +264,7 @@ for (n_sd_away in 0:3) {
 
   for (i in 1:length(n_particles_vals)) {
     tree_height <- foreach(j = 1:n_reps, .combine = c)  %dorng% treeht_iters(ou_data, j, n_particles_vals[i], imtl_states)
-    write.table(t(tree_height), file=paste("treeht_out_", n_sd_away, "sd.csv", sep=""), sep=",", append=TRUE, row.names=FALSE, col.names=FALSE)
+    write.table(t(tree_height), file="treeht_out_0123sd.csv", sep=",", append=TRUE, row.names=FALSE, col.names=FALSE)
   }
 }
 
