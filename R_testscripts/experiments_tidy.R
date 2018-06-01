@@ -223,7 +223,7 @@ setClass("samplegenealogy", representation(ancestry="matrix", samplesize="intege
 n_leaves <- 2
 n_particles_vals <- seq(from = 256, to = 4096, by = 256)
 
-n_reps <- 100
+n_reps <- 1000
 
 
 ## Generate (now read in) synthetic data ---------------
@@ -232,29 +232,7 @@ delta <- 0.1
 sigma <- 0.1
 n_obs <- 6 * n_particles_vals[length(n_particles_vals)]
 
-ou_data <- read.csv("oudata.csv", header = FALSE)
-
-### Conditional SMC ======================
-## Generate immortal trajectory ----------
-## (by sampling from a standard SMC run)
-#
-# std_n_particles <- 100
-#
-# std_smc <- standard_SMC(std_n_particles, ou_data, ou_emission_density, ou_transition_sam, ou_initial_sam, sigma = sigma, delta = delta)
-# imtl_index <- sample(1:std_n_particles, 1, prob = std_smc$weights[nrow(std_smc$weights), ])
-#
-# std_anc <- std_smc$ancestors
-# class(std_anc) <- 'genealogy'
-# std_anc@N <- as.integer(std_n_particles)
-# std_anc@Ngen <- as.integer(n_obs - 1)
-#
-# imtl_anc <- traceAncestry(std_anc, sampl = imtl_index)
-#
-# imtl_states <- numeric(n_obs)
-# for (t in 1:(n_obs - 1)) {
-#   imtl_states[t] <- std_smc$positions[t, imtl_anc[t]]
-# }
-# imtl_states[n_obs] <- std_smc$positions[n_obs, imtl_index]
+ou_data <- read.csv("oudata.csv", header = FALSE)[[1]]
 
 ## Run simulations -----------------------
 
@@ -279,7 +257,7 @@ for (n_sd_away in 0:3) {
 
   for (i in 1:length(n_particles_vals)) {
     tree_height <- foreach(j = 1:n_reps, .combine = c)  %dorng% treeht_iters(ou_data, j, n_particles_vals[i], imtl_states)
-    write.table(t(tree_height), file="treeht_out_0123sd.csv", sep=",", append=TRUE, row.names=FALSE, col.names=FALSE)
+    write.table(t(tree_height), file="treeht_out_n2.csv", sep=",", append=TRUE, row.names=FALSE, col.names=FALSE)
   }
 }
 
@@ -289,7 +267,11 @@ stopImplicitCluster()
 # ### Standard SMC ======================
 # ## Run simulations -----------------------
 #
-# treeht_iters <- function(data, j, n_particles, imtl_states){
+
+# no_cores <- future::availableCores()
+# registerDoParallel(makeCluster(no_cores, type='FORK', outfile="debug_file.txt"))
+#
+# treeht_iters <- function(data, j, n_particles){
 #   anc <- standard_SMC_anc(n_particles, data, ou_emission_density, ou_transition_sam, ou_initial_sam, sigma = sigma, delta = delta)
 #
 #   class(anc) <- 'genealogy'
@@ -299,13 +281,11 @@ stopImplicitCluster()
 #   ancestrySize_treeht(anc, sampl=sample(1:n_particles, n_leaves, replace=F))
 # }
 #
-# no_cores <- future::availableCores()
-# registerDoParallel(makeCluster(no_cores, type='FORK', outfile="debug_file.txt"))
-#
 # for (i in 1:length(n_particles_vals)) {
-#   tree_height <- foreach(j = 1:n_reps, .combine = c)  %dorng% treeht_iters(ou_data, j, n_particles_vals[i], imtl_states)
-#   write.table(t(tree_height), file="treeht_out.csv", sep=",", append=TRUE, row.names=FALSE, col.names=FALSE)
+#   tree_height <- foreach(j = 1:n_reps, .combine = c)  %dorng% treeht_iters(ou_data, j, n_particles_vals[i])
+#   write.table(t(tree_height), file="treeht_out_std.csv", sep=",", append=TRUE, row.names=FALSE, col.names=FALSE)
 # }
 #
-# stopImplicitCluster()
 #
+# stopImplicitCluster()
+
