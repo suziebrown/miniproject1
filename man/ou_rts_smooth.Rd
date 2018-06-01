@@ -4,7 +4,7 @@
 \alias{ou_rts_smooth}
 \title{RTS smoother for OU model}
 \usage{
-ou_rts_smooth(observations, delta, sigma)
+ou_rts_smooth(observations, delta, sigma, prior_mean = 0, prior_var = 1)
 }
 \arguments{
 \item{observations}{vector of observations from the OU model}
@@ -12,6 +12,10 @@ ou_rts_smooth(observations, delta, sigma)
 \item{delta}{drift parameter of the Ornstein-Uhlenbeck process}
 
 \item{sigma}{noise parameter of the Ornstein-Uhlenbeck process}
+
+\item{prior_mean}{prior mean}
+
+\item{prior_var}{prior variance}
 }
 \value{
 list containing the smoothed means and variances
