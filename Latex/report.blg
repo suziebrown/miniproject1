@@ -7,34 +7,34 @@ Warning--there's a number but no series in wakeley2009
 Warning--empty publisher in wakeley2009
 You've used 8 entries,
             2909 wiz_defined-function locations,
-            688 strings with 5809 characters,
-and the built_in function-call counts, 26238 in all, are:
-= -- 4185
+            689 strings with 5969 characters,
+and the built_in function-call counts, 26261 in all, are:
+= -- 4187
 > -- 351
 < -- 1
 + -- 1946
 - -- 105
-* -- 2231
-:= -- 5393
+* -- 2232
+:= -- 5395
 add.period$ -- 8
 call.type$ -- 8
 change.case$ -- 111
 chr.to.int$ -- 6
 cite$ -- 10
-duplicate$ -- 126
-empty$ -- 262
+duplicate$ -- 128
+empty$ -- 269
 format.name$ -- 124
-if$ -- 4676
+if$ -- 4685
 int.to.chr$ -- 7
 int.to.str$ -- 0
 missing$ -- 9
 newline$ -- 27
 num.names$ -- 83
-pop$ -- 29
+pop$ -- 30
 preamble$ -- 1
 purify$ -- 120
 quote$ -- 0
-skip$ -- 107
+skip$ -- 104
 stack$ -- 0
 substring$ -- 5863
 swap$ -- 23
@@ -45,5 +45,5 @@ type$ -- 30
 warning$ -- 2
 while$ -- 178
 width$ -- 0
-write$ -- 103
+write$ -- 105
 (There were 2 warnings)

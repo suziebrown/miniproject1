@@ -8,6 +8,9 @@
 \usepackage{subfig}
 \usepackage{enumitem}
 
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
 \title{Conditional SMC genealogies}
 \author{Suzie Brown\\ {\small supervised by Adam Johansen, Jere Koskela, Paul Jenkins \& Dario Span\`o}}
 \date{\today}
@@ -34,6 +37,76 @@
 \section{Introduction}
 
 \section{Background}
+
+\subsection{Sequential Monte Carlo}
+Sequential Monte Carlo (SMC) methods can be applied in a much more general setting, but are particularly easy to motivate in the setting of state space models, where the ``sequential'' nature follows naturally from the discrete time steps present in the model. 
+For the purposes of presenting the algorithm, let us consider a generic hidden Markov model (HMM) with hidden states $X_{0:M}$ and observables $Y_{0:M}$:
+\begin{align*}
+& X_0 \sim \mu(\cdot) \\
+& X_{t+1} \mid (X_t = x_t) \sim f(\cdot \mid x_t)  \qquad t=0,\dots,M-1 \\
+& Y_t \mid (X_t = x_t) \sim g(\cdot \mid x_t) \qquad t=0,\dots,M
+\end{align*}
+with the conditional independence structure
+\begin{align*}
+& X_{t+1} \perp X_{0:t-1}, X_{t+2:M} \mid X_t \\
+& Y_t \perp Y_{0:t-1}, Y_{t+1:M}, X_{0:t-1}, X_{t+1:M} \mid X_t
+\end{align*}
+for all $t$, as represented graphically below.
+
+\begin{center}
+\begin{tikzpicture}
+\node (yt) {$Y_t$};
+\node (thet) [below=of yt] {$X_t$};
+\node (yt1) [left=of yt] {$Y_{t-1}$};
+\node (thet1) [below=of yt1] {$X_{t-1}$};
+\node (dot1) [left=of thet1] {$\dots$};
+\node (dot2) [right=of thet] {$\dots$};
+\draw[->](thet.north)--(yt.south);
+\draw[->](thet1.north)--(yt1.south);
+\draw[->](thet1.east)--(thet.west);
+\draw[->](dot1.east)--(thet1.west);
+\draw[->](thet.east)--(dot2.west);
+\end{tikzpicture}
+\end{center}
+
+The conditional independence structure implies that the (joint) marginal distribution of the hidden states $X_{0:t}$ has the form
+\begin{equation} \label{eq:hmm_marginal}
+p(x_{0:t}) = \mu(x_0) \prod_{i=1}^t f(x_i \mid x_{i-1})
+\end{equation}
+and the likelihood of the observations $y_{0:t}$ given the underlying states $x_{0:t}$ has the form
+\begin{equation} \label{eq:hmm_likelihood}
+p(y_{0:t} \mid x_{0:t}) = \prod_{i=0}^t g(y_i \mid x_i).
+\end{equation}
+
+There are two main inference problems of interest in HMMs, namely estimating the filtering distributions $p(x_t \mid y_{0:t})$ and smoothing distributions $p(x_{0:t} \mid y_{0:t})$. Again using the conditional independence structure, we can write the smoothing distributions as
+\begin{align}
+p(x_{0:t} \mid y_{0:t}) &\propto p(x_{0:t-1}\mid y_{0:t-1}) f(x_t\mid x_{t-1}) g(y_t \mid x_t) \label{eq:smooth_recursion}\\
+&\propto \mu(x_0) g(y_0\mid x_0) \prod_{i=1}^n f(x_i \mid x_{i-1}) g(y_i\mid x_i) \notag
+\end{align}
+for $t = 0,\dots,M$. The filtering distribution $p(x_t \mid y_{0:t})$ can be obtained by marginalising out $x_{0:t-1}$, which is straightforward if the smoothing distribution has been approximated using Monte Carlo methods.
+
+SMC provides a way to approximate these distributions given a model specification and a sequence of observations. Like the underlying process, the algorithm proceeds sequentially, returning its approximation to the filtering/smoothing distribution at each time step.
+%% (BOOTSTRAP FILTER ALGORITHM or) GENERIC ALGORITHM
+One iteration of a generic SMC algorithm consists of the following steps:
+
+%% ANCESTRAL DEGENERACY
+
+\subsubsection{Conditional SMC}
+Conditional SMC differs from the standard algorithm in that, a priori, one particular trajectory (that is, a sequence of particle positions and the corresponding ancestral line) is conditioned to survive all of the propagation and resampling steps. We will refer to this trajectory as the \emph{immortal line}, following the terminology used for conditioned Galton-Watson processes, and the \emph{immortal particle} is the particle in a particular generation that is a member of the immortal line.
+This conditioning amounts to the following. We require that after a propagation step, the immortal particle ends up in its pre-conditioned position; and that after a resampling step, the immortal particle is assigned to its pre-conditioned parent.
+%% blah blah blah
+
+The conditional SMC algorithm was introduced by \citet{andrieu2010} for use in particle MCMC methods. %% why...
+
+%% ALGORITHM
+One iteration of a conditional SMC algorithm consists of the following steps:
+
+
+
+%% USAGE IN PARTICLE GIBBS
+
+
+\subsection{Population genetics}
 The Wright-Fisher model \citep[Chapter 3]{wakeley2009}, popular in the analysis of population genetics, includes some simplifying assumptions that make it somewhat unrealistic for that application. Namely, it is assumed that the population size is constant, and that generations do not overlap. 
 While these constraints may hamper the model's applicability to population genetics, it is pleasing to note that when re-purposed for the analysis of SMC genealogies, both of these rather restrictive assumptions apply automatically. At least in the most common SMC algorithms, the number of particles (population size) remains constant at each iteration, and the resampling (reproduction) procedure is applied to all particles at once.
 
@@ -52,9 +125,7 @@ Allowing for dependence between generations significantly complicates the comput
 
 We would like to extend to the case of conditional SMC, which differs substantially from the case of \citet{koskela2018} because there is a particular ancestral line that is conditioned to survive. This extension is important to make the results applicable to the particle Gibbs algorithm \citep{andrieu2010}, which is popular across a range of applications.
 
-\subsection{Sequential Monte Carlo}
 
-\subsubsection{Conditional SMC}
 
 %\subsection{Population genetics}
 %The Wright-Fisher model, popular in the analysis of population genetics, bears some simplifying assumptions that render it unrealistic for that application. Namely, the population size is assumed to remain constant, and the generations non-overlapping. While these constraints may hamper the model's applicability to population genetics, it is pleasing to note that when re-purposed for the analysis of SMC genealogies, both of these rather restrictive assumptions apply automatically. At least in the most common SMC algorithms, the number of particles (population size) remains constant at each iteration, and the resampling (reproduction) procedure is applied to all particles at once.
