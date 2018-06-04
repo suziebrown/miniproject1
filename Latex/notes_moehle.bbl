@@ -1,0 +1,14 @@
+\begin{thebibliography}{xx}
+
+\harvarditem[Koskela et~al.]{Koskela, Jenkins, Johansen \harvardand\
+  Spano}{2018}{koskela2018}
+Koskela, J., Jenkins, P.~A., Johansen, A.~M. \harvardand\ Spano, D.
+  \harvardyearleft 2018\harvardyearright , `Asymptotic genealogies of
+  interacting particle systems with an application to sequential monte carlo',
+  {\em arXiv preprint arXiv:1804.01811} .
+
+\harvarditem{M{\"o}hle}{1998}{mohle1998}
+M{\"o}hle, M.  \harvardyearleft 1998\harvardyearright , `Robustness results for
+  the coalescent', {\em Journal of applied probability} {\bf 35}(2),~438--447.
+
+\end{thebibliography}

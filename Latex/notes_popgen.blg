@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: notes_popgen.aux
+The style file: agsm.bst
+Database file #1: smc.bib
+Warning--there's a number but no series in wakeley2009
+Warning--empty publisher in wakeley2009
+You've used 4 entries,
+            2909 wiz_defined-function locations,
+            664 strings with 5281 characters,
+and the built_in function-call counts, 12705 in all, are:
+= -- 2023
+> -- 163
+< -- 1
++ -- 939
+- -- 49
+* -- 1069
+:= -- 2638
+add.period$ -- 4
+call.type$ -- 4
+change.case$ -- 55
+chr.to.int$ -- 4
+cite$ -- 6
+duplicate$ -- 63
+empty$ -- 126
+format.name$ -- 58
+if$ -- 2254
+int.to.chr$ -- 5
+int.to.str$ -- 0
+missing$ -- 5
+newline$ -- 15
+num.names$ -- 41
+pop$ -- 18
+preamble$ -- 1
+purify$ -- 60
+quote$ -- 0
+skip$ -- 50
+stack$ -- 0
+substring$ -- 2831
+swap$ -- 10
+text.length$ -- 57
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 14
+warning$ -- 2
+while$ -- 88
+width$ -- 0
+write$ -- 52
+(There were 2 warnings)
