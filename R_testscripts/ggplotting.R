@@ -51,29 +51,29 @@ ggplot(df, aes(npart, meanht / npart)) +
 
 ## Standard SMC ------
 
-treeht_std2 <- read.csv("treeht_std_n2.csv", header=FALSE)
-# treeht_std16 <- read.csv("treeht_std_n16.csv", header=FALSE)
+treeht_std2 <- read.csv("Sim_data/180604/treeht_std_n2.csv", header=FALSE)
+treeht_std16 <- read.csv("Sim_data/180604/treeht_std_n16.csv", header=FALSE)
 
 mean_std2 <- apply(treeht_std2, 1, mean, na.rm=T)
 var_std2 <- apply(treeht_std2, 1, var, na.rm=T)
 se_std2 <- (var_std2 / n_reps) ^ 0.5
 
-# mean_std16 <- apply(treeht_std16, 1, mean, na.rm=T)
-# var_std16 <- apply(treeht_std16, 1, var, na.rm=T)
-# se_std16 <- (var_std16 / n_reps) ^ 0.5
+mean_std16 <- apply(treeht_std16, 1, mean, na.rm=T)
+var_std16 <- apply(treeht_std16, 1, var, na.rm=T)
+se_std16 <- (var_std16 / n_reps) ^ 0.5
 
-# df <- data.frame(npart = rep(seq(from = 256, to = 4096, by = 256), 2),
-#                  meanht = c(mean_std2, mean_std16),
-#                  seht = c(se_std2, se_std16),
-#                  n.leaves = rep(c(2, 16), each=length(mean_std2)))
+df <- data.frame(npart = rep(seq(from = 256, to = 4096, by = 256), 2),
+                 meanht = c(mean_std2, mean_std16),
+                 seht = c(se_std2, se_std16),
+                 n.leaves = as.factor(rep(c(2, 16), each=length(mean_std2))))
 
-df <- data.frame(npart = seq(from = 256, to = 4096, by = 256),
-                 meanht = mean_std2,
-                 seht = se_std2,
-                 n.leaves = rep(2, length(mean_std2)))
+# df <- data.frame(npart = seq(from = 256, to = 4096, by = 256),
+#                  meanht = mean_std2,
+#                  seht = se_std2,
+#                  n.leaves = rep(2, length(mean_std2)))
 
-ggplot(df, aes(npart, meanht / npart)) +
-  geom_point(aes(col = n.leaves)) +
+ggplot(df, aes(npart, meanht / npart, group=n.leaves)) +
+  geom_line(aes(col = n.leaves)) +
   geom_ribbon(aes(ymin = (meanht - seht) / npart,
                   ymax = (meanht + seht) / npart, fill = n.leaves),
               alpha=0.3) +
