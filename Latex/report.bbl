@@ -7,6 +7,22 @@ Andrieu, C., Doucet, A. \harvardand\ Holenstein, R.  \harvardyearleft
   Journal of the Royal Statistical Society: Series B (Statistical Methodology)}
   {\bf 72}(3),~269--342.
 
+\harvarditem[Carpenter et~al.]{Carpenter, Clifford \harvardand\
+  Fearnhead}{1999}{carpenter1999}
+Carpenter, J., Clifford, P. \harvardand\ Fearnhead, P.  \harvardyearleft
+  1999\harvardyearright , `Improved particle filter for nonlinear problems',
+  {\em IEE Proceedings-Radar, Sonar and Navigation} {\bf 146}(1),~2--7.
+
+\harvarditem{Douc \harvardand\ Capp{\'e}}{2005}{douc2005}
+Douc, R. \harvardand\ Capp{\'e}, O.  \harvardyearleft 2005\harvardyearright ,
+  Comparison of resampling schemes for particle filtering, {\em in} `Image and
+  Signal Processing and Analysis, 2005. ISPA 2005. Proceedings of the 4th
+  International Symposium on', IEEE, pp.~64--69.
+
+\harvarditem{Efron \harvardand\ Tibshirani}{1994}{efron1994}
+Efron, B. \harvardand\ Tibshirani, R.~J.  \harvardyearleft
+  1994\harvardyearright , {\em An introduction to the bootstrap}, CRC press.
+
 \harvarditem{Kingman}{1982{\em a}}{kingman1982coal}
 Kingman, J.  \harvardyearleft 1982{\em a}\harvardyearright , `The coalescent',
   {\em Stochastic processes and their applications} {\bf 13}(3),~235--248.
@@ -23,12 +39,22 @@ Kingman, J.  \harvardyearleft 1982{\em c}\harvardyearright , `On the genealogy
   of large populations', {\em Journal of Applied Probability} {\bf
   19}(A),~27--43.
 
+\harvarditem{Kitagawa}{1996}{kitagawa1996}
+Kitagawa, G.  \harvardyearleft 1996\harvardyearright , `Monte carlo filter and
+  smoother for non-gaussian nonlinear state space models', {\em Journal of
+  computational and graphical statistics} {\bf 5}(1),~1--25.
+
 \harvarditem[Koskela et~al.]{Koskela, Jenkins, Johansen \harvardand\
   Spano}{2018}{koskela2018}
 Koskela, J., Jenkins, P.~A., Johansen, A.~M. \harvardand\ Spano, D.
   \harvardyearleft 2018\harvardyearright , `Asymptotic genealogies of
   interacting particle systems with an application to sequential monte carlo',
   {\em arXiv preprint arXiv:1804.01811} .
+
+\harvarditem{Liu \harvardand\ Chen}{1998}{liu1998}
+Liu, J.~S. \harvardand\ Chen, R.  \harvardyearleft 1998\harvardyearright ,
+  `Sequential monte carlo methods for dynamic systems', {\em Journal of the
+  American statistical association} {\bf 93}(443),~1032--1044.
 
 \harvarditem{M{\"o}hle}{1998}{mohle1998}
 M{\"o}hle, M.  \harvardyearleft 1998\harvardyearright , `Robustness results for

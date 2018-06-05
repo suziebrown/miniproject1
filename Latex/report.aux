@@ -3,50 +3,106 @@
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Background}{1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Sequential Monte Carlo}{1}}
-\newlabel{eq:hmm_marginal}{{1}{1}}
-\newlabel{eq:hmm_likelihood}{{2}{1}}
-\newlabel{eq:smooth_recursion}{{3}{1}}
+\newlabel{sec:smc}{{2.1}{1}}
+\citation{efron1994}
+\citation{douc2005}
+\newlabel{eq:hmm_marginal}{{2.1}{2}}
+\newlabel{eq:hmm_likelihood}{{2.1}{2}}
+\newlabel{eq:smooth_recursion}{{1}{2}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Standard SMC\relax }}{2}}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{alg:SMC}{{1}{2}}
+\citation{liu1998}
+\citation{kitagawa1996}
+\citation{carpenter1999}
+\citation{douc2005}
+\citation{andrieu2010}
+\citation{andrieu2010}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Conditional SMC}{3}}
 \citation{andrieu2010}
 \citation{wakeley2009}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Conditional SMC with multinomial resampling\relax }}{4}}
+\newlabel{alg:condSMC}{{2}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Population genetics}{4}}
+\newlabel{sec:popgen}{{2.2}{4}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.1}Wright-Fisher model and generalisations}{4}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}Application to SMC genealogies}{4}}
 \citation{wakeley2009}
+\citation{kingman1982gene}
+\citation{wakeley2009}
+\citation{wakeley2009}
+\citation{mohle1998}
 \citation{kingman1982gene,kingman1982coal,kingman1982exch}
 \citation{mohle1998}
 \citation{koskela2018}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Conditional SMC}{2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Population genetics}{2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Previous work}{2}}
 \citation{koskela2018}
 \citation{andrieu2010}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Kingman's $n$-coalescent}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Previous work}{5}}
+\newlabel{sec:previous}{{2.4}{5}}
+\citation{mohle1998}
+\citation{koskela2018}
+\citation{mohle1998}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.1}Some details from the proofs}{6}}
+\newlabel{eq:sum_vi}{{2}{6}}
+\newlabel{eq:trans_prob}{{3}{6}}
+\newlabel{eq:coal_prob1}{{4}{6}}
+\newlabel{eq:tools_swap_sum_prod}{{5}{6}}
+\newlabel{eq:tools_bernoulli_ineq}{{6}{6}}
+\newlabel{eq:tools_power_v_fact}{{7}{6}}
+\newlabel{eq:tools_fact_taketwo_bd}{{8}{6}}
+\newlabel{eq:tools_fact_asymp1}{{9}{6}}
+\newlabel{eq:tools_fact_asymp2}{{10}{6}}
+\newlabel{assn:coal_rate}{{{{(A)}}}{7}}
+\newlabel{assn:coal_var}{{{{(B)}}}{7}}
+\newlabel{assn:triple_coal}{{{{(C)}}}{7}}
+\newlabel{assn:multi_coal}{{{{(D)}}}{7}}
+\newlabel{case:pair_merge}{{{{\textbf  {Case 1.}}}}{7}}
+\newlabel{eq:case1_upper}{{12}{7}}
+\newlabel{eq:transprob_lowerbd}{{13}{8}}
+\newlabel{case:triple_merge}{{{{\textbf  {Case 2.}}}}{8}}
+\newlabel{eq:triplemerge_bound_spinoff}{{15}{9}}
+\newlabel{case:multi_merge}{{{{\textbf  {Case 3.}}}}{9}}
+\newlabel{case:no_change}{{{{\textbf  {Case 4.}}}}{9}}
 \citation{koskela2018}
 \citation{koskela2018}
 \citation{koskela2018}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Theoretical results}{3}}
+\newlabel{eq:transprob_lowerbd2}{{18}{10}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Theoretical results}{10}}
+\newlabel{sec:theory}{{3}{10}}
 \citation{koskela2018}
 \citation{koskela2018}
 \citation{koskela2018}
 \citation{koskela2018}
+\citation{koskela2018}
+\citation{koskela2018}
+\newlabel{eq:tau_bounds1}{{23}{11}}
+\newlabel{eq:tau_bounds2}{{24}{11}}
 \citation{koskela2018}
 \citation{koskela2018}
 \citation{rauch1965}
-\newlabel{eq:tau_bounds1}{{6}{4}}
-\newlabel{eq:tau_bounds2}{{7}{4}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Simulation study}{4}}
 \citation{koskela2018}
 \citation{koskela2018}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces $\mathbb  {E}(T/N)$ for samples of $n=16$ leaves from conditional SMC where the immortal line is 0,1,2,3 standard deviations away from the MAP estimate. Each point is averaged over 100 repetitions of running the particle filter and sampling $n$ leaves; and the same sequence of observations was used for every run. Different choices of immortal line clearly have a profound effect on tree height: in the number of generations taken for 16 lineages to coalesce, it is likely that the subtree will contain part of the immortal line.\relax }}{5}}
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:kalman_n16}{{1}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces $\mathbb  {E}(T/N)$ for samples of $n=2$ leaves from conditional SMC where the immortal line is 0,1,2,3 standard deviations away from the MAP estimate. Each point is averaged over 1000 repetitions of running the particle filter and sampling $n$ leaves; and the same sequence of observations was used for every run. Now the choice of immortal line does not seem to affect the tree height: $n$ is so small compared to $N$ that it is unlikely to sample a pair of lineages that meet the immortal line before coalescing.\relax }}{6}}
-\newlabel{fig:kalman_n2}{{2}{6}}
 \citation{koskela2018}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Simulation study}{12}}
+\newlabel{sec:simulations}{{4}{12}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions}{12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces $\mathbb  {E}(T/N)$ for samples of $n=16$ leaves from conditional SMC where the immortal line is 0,1,2,3 standard deviations away from the MAP estimate. Each point is averaged over 100 repetitions of running the particle filter and sampling $n$ leaves; and the same sequence of observations was used for every run. Different choices of immortal line clearly have a profound effect on tree height: in the number of generations taken for 16 lineages to coalesce, it is likely that the subtree will contain part of the immortal line.\relax }}{13}}
+\newlabel{fig:kalman_n16}{{1}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces $\mathbb  {E}(T/N)$ for samples of $n=2$ leaves from conditional SMC where the immortal line is 0,1,2,3 standard deviations away from the MAP estimate. Each point is averaged over 1000 repetitions of running the particle filter and sampling $n$ leaves; and the same sequence of observations was used for every run. Now the choice of immortal line does not seem to affect the tree height: $n$ is so small compared to $N$ that it is unlikely to sample a pair of lineages that meet the immortal line before coalescing.\relax }}{14}}
+\newlabel{fig:kalman_n2}{{2}{14}}
 \citation{koskela2018}
 \bibdata{smc.bib}
 \bibcite{andrieu2010}{{1}{2010}{{Andrieu et~al.}}{{Andrieu, Doucet and\ Holenstein}}}
-\bibcite{kingman1982coal}{{2}{1982{\em  a}}{{Kingman}}{{}}}
-\bibcite{kingman1982exch}{{3}{1982{\em  b}}{{Kingman}}{{}}}
-\bibcite{kingman1982gene}{{4}{1982{\em  c}}{{Kingman}}{{}}}
-\bibcite{koskela2018}{{5}{2018}{{Koskela et~al.}}{{Koskela, Jenkins, Johansen and\ Spano}}}
-\bibcite{mohle1998}{{6}{1998}{{M{\"o}hle}}{{}}}
-\bibcite{rauch1965}{{7}{1965}{{Rauch et~al.}}{{Rauch, Striebel and\ Tung}}}
-\bibcite{wakeley2009}{{8}{2009}{{Wakeley}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions}{7}}
+\bibcite{carpenter1999}{{2}{1999}{{Carpenter et~al.}}{{Carpenter, Clifford and\ Fearnhead}}}
+\bibcite{douc2005}{{3}{2005}{{Douc and\ Capp{\'e}}}{{}}}
+\bibcite{efron1994}{{4}{1994}{{Efron and\ Tibshirani}}{{}}}
+\bibcite{kingman1982coal}{{5}{1982{\em  a}}{{Kingman}}{{}}}
+\bibcite{kingman1982exch}{{6}{1982{\em  b}}{{Kingman}}{{}}}
+\bibcite{kingman1982gene}{{7}{1982{\em  c}}{{Kingman}}{{}}}
+\bibcite{kitagawa1996}{{8}{1996}{{Kitagawa}}{{}}}
+\bibcite{koskela2018}{{9}{2018}{{Koskela et~al.}}{{Koskela, Jenkins, Johansen and\ Spano}}}
+\bibcite{liu1998}{{10}{1998}{{Liu and\ Chen}}{{}}}
+\bibcite{mohle1998}{{11}{1998}{{M{\"o}hle}}{{}}}
+\bibcite{rauch1965}{{12}{1965}{{Rauch et~al.}}{{Rauch, Striebel and\ Tung}}}
+\bibcite{wakeley2009}{{13}{2009}{{Wakeley}}{{}}}
