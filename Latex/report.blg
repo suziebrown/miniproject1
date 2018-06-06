@@ -5,45 +5,45 @@ The style file: agsm.bst
 Database file #1: smc.bib
 Warning--there's a number but no series in wakeley2009
 Warning--empty publisher in wakeley2009
-You've used 13 entries,
+You've used 16 entries,
             2909 wiz_defined-function locations,
-            725 strings with 6805 characters,
-and the built_in function-call counts, 44086 in all, are:
-= -- 7062
-> -- 586
+            744 strings with 7237 characters,
+and the built_in function-call counts, 57593 in all, are:
+= -- 9261
+> -- 773
 < -- 1
-+ -- 3281
-- -- 175
-* -- 3751
-:= -- 9011
-add.period$ -- 13
-call.type$ -- 13
-change.case$ -- 180
-chr.to.int$ -- 11
-cite$ -- 15
-duplicate$ -- 215
-empty$ -- 444
-format.name$ -- 217
-if$ -- 7893
++ -- 4335
+- -- 231
+* -- 4929
+:= -- 11698
+add.period$ -- 16
+call.type$ -- 16
+change.case$ -- 222
+chr.to.int$ -- 14
+cite$ -- 18
+duplicate$ -- 269
+empty$ -- 553
+format.name$ -- 285
+if$ -- 10331
 int.to.chr$ -- 7
 int.to.str$ -- 0
-missing$ -- 15
-newline$ -- 42
-num.names$ -- 134
-pop$ -- 54
+missing$ -- 18
+newline$ -- 51
+num.names$ -- 166
+pop$ -- 66
 preamble$ -- 1
-purify$ -- 195
+purify$ -- 240
 quote$ -- 0
-skip$ -- 173
+skip$ -- 218
 stack$ -- 0
-substring$ -- 9863
-swap$ -- 40
-text.length$ -- 183
+substring$ -- 12964
+swap$ -- 51
+text.length$ -- 225
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 48
+type$ -- 60
 warning$ -- 2
-while$ -- 292
+while$ -- 361
 width$ -- 0
-write$ -- 169
+write$ -- 211
 (There were 2 warnings)
