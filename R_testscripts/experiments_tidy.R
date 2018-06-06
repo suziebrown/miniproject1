@@ -1,4 +1,7 @@
 ## EXPERIMENTS (new tidier source!)
+## code used to run the experiments (in parallel) that were actually used to make the plots
+## in the report. Yes, believe it or not, it was this terrible (no longer tidy!) code.
+
 
 rm(list = ls())
 

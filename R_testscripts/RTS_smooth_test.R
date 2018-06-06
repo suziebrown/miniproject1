@@ -1,5 +1,5 @@
 ## Smoothing solution for Ornstein-Uhlenbeck model
-##
+## This is the test script: the approved version is OU_RTS_smooth.R in R folder.
 
 ## Test values ---------------------------
 
